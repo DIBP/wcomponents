@@ -59,14 +59,14 @@ public class AjaxPageShellInterceptor extends InterceptorComponent {
 		String focusId = uic.getFocussedId();
 
 		xml.append(XMLUtil.getXMLDeclarationWithThemeXslt(uic));
-		xml.appendTagOpen("ui:ajaxresponse");
-		xml.append(XMLUtil.STANDARD_NAMESPACES);
-		xml.appendOptionalAttribute("defaultFocusId", uic.isFocusRequired() && !Util.empty(focusId),
+		xml.appendTagOpen("template");
+		// xml.append(XMLUtil.STANDARD_NAMESPACES);
+		xml.appendOptionalAttribute("data-wc-defaultfocusid", uic.isFocusRequired() && !Util.empty(focusId),
 				focusId);
 		xml.appendClose();
 
 		getBackingComponent().paint(renderContext);
 
-		xml.appendEndTag("ui:ajaxresponse");
+		xml.appendEndTag("template");
 	}
 }

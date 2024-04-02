@@ -27,6 +27,19 @@ import org.apache.commons.logging.LogFactory;
  * @since 1.0.0
  */
 public class AjaxInterceptor extends InterceptorComponent {
+	/**
+	 * Tag name for the AJAX Target element.
+	 */
+	public static final String TAG_TARGET = "wc-ajaxtarget";
+	/**
+	 * Attribute name for the AJAX Target element's "target id".
+	 */
+	public static final String ATTR_TARGET_ID = "data-id";
+	/**
+	 * Attribute name for the AJAX Target element's "action".
+	 */
+	public static final String ATTR_ACTION = "data-action";
+
 
 	/**
 	 * The logger instance for this class.
@@ -122,9 +135,9 @@ public class AjaxInterceptor extends InterceptorComponent {
 			throw new SystemException("No context available for trigger " + operation.getTriggerId());
 		}
 
-		xml.appendTagOpen("ui:ajaxtarget");
-		xml.appendAttribute("id", operation.getTargetContainerId());
-		xml.appendAttribute("action", AjaxOperation.AjaxAction.REPLACE_CONTENT.getDesc());
+		xml.appendTagOpen(TAG_TARGET);
+		xml.appendAttribute(ATTR_TARGET_ID, operation.getTargetContainerId());
+		xml.appendAttribute(ATTR_ACTION, AjaxOperation.AjaxAction.REPLACE_CONTENT.getDesc());
 		xml.appendClose();
 
 		// Paint targets - Assume targets are in the same context as the trigger
@@ -147,7 +160,7 @@ public class AjaxInterceptor extends InterceptorComponent {
 			UIContextHolder.popContext();
 		}
 
-		xml.appendEndTag("ui:ajaxtarget");
+		xml.appendEndTag(TAG_TARGET);
 	}
 
 	/**
@@ -180,14 +193,14 @@ public class AjaxInterceptor extends InterceptorComponent {
 
 			UIContextHolder.pushContext(target.getContext());
 			try {
-				xml.appendTagOpen("ui:ajaxtarget");
-				xml.appendAttribute("id", targetId);
-				xml.appendAttribute("action", operation.getAction().getDesc());
+				xml.appendTagOpen(TAG_TARGET);
+				xml.appendAttribute(ATTR_TARGET_ID, targetId);
+				xml.appendAttribute(ATTR_ACTION, operation.getAction().getDesc());
 				xml.appendClose();
 
 				target.getComponent().paint(renderContext);
 
-				xml.appendEndTag("ui:ajaxtarget");
+				xml.appendEndTag(TAG_TARGET);
 			} finally {
 				UIContextHolder.popContext();
 			}

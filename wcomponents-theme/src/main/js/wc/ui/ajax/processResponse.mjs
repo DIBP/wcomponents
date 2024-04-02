@@ -7,6 +7,7 @@ import toDocFragment from "wc/dom/toDocFragment.mjs";
 import timers from "wc/timers.mjs";
 
 let observer;
+const TAG_AJAXTARGET = "wc-ajaxtarget";
 const ACTIONS = { FILL: "replaceContent", REPLACE: "replace", APPEND: "append", IN: "in" };
 const errorUtils = {
 		ajaxAttr: "data-wc-ajaxalias",
@@ -105,15 +106,15 @@ const instance = {
 		if (response) {
 			promise = new Promise(function(resolve, reject) {
 				if (typeof response === "string") {
-					const doc = toDocFragment(response);
+					const doc = toDocFragment(response, true);
 					processResponseHtml(doc, trigger);
 					resolve();
 				} else {
-					reject("Unknown response type");
+					reject(new TypeError("Unknown response type"));
 				}
 			});
 		} else {
-			promise = Promise.reject("Response is empty");
+			promise = Promise.reject(new TypeError("Response is empty"));
 		}
 		return promise;
 	},
@@ -165,7 +166,7 @@ function processResponseHtml(documentFragment, trigger) {
 			doc = documentFragment.firstElementChild || documentFragment.firstChild;
 		}
 		if (doc) {
-			const targets = doc.querySelectorAll(".wc-ajaxtarget");
+			const targets = doc.querySelectorAll(TAG_AJAXTARGET);
 			for (const next of targets) {
 				next.parentNode.removeChild(next);  // remove the target wrapper
 				if (next.nodeType === Node.ELEMENT_NODE) {
@@ -502,5 +503,9 @@ function checkDuplicateIds(content) {
  * utilize browser idle time to asynchronously load resources in a way that does not adversly affect the user.
  */
 timers.setTimeout(errorUtils.fetch, 60000);
+
+if (!customElements.get(TAG_AJAXTARGET)) {
+	customElements.define(TAG_AJAXTARGET, class AjaxTarget extends HTMLElement {});
+}
 
 export default instance;
