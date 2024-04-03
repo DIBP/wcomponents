@@ -59,15 +59,18 @@ const instance = {
  * @param {boolean} [ignoreMessages] if `true` then allow focus request even if there are message boxes in the view
  */
 function doRequestFocus(targetId, ignoreMessages) {
-	var element;
-	if ((element = document.getElementById(targetId)) && canPolitelyChangeFocus(ignoreMessages)) {
+	let element = document.getElementById(targetId);
+	if (element && canPolitelyChangeFocus(ignoreMessages)) {
 		if (focus.canFocus(element)) {
 			focus.setFocusRequest(element);
 		} else if (focus.canFocusInside(element)) { // try focusing inside the target
 			focus.focusFirstTabstop(element);
-		} else if (element.clientHeight === 0 && element.clientWidth === 0 && (element = focus.getFocusableAncestor(element))) {
+		} else if (element.clientHeight === 0 && element.clientWidth === 0) {
+			element = focus.getFocusableAncestor(element);
 			// as a last resort try focusing the nearest focusable ancestor of element if element has no dimensions
-			focus.setFocusRequest(element);
+			if (element) {
+				focus.setFocusRequest(element);
+			}
 		}
 	}
 }
@@ -78,12 +81,12 @@ function doRequestFocus(targetId, ignoreMessages) {
  * interfere with the user.
  * @function
  * @private
- * @returns {Boolean} true if it is ok to change focus from whereever it happens to be at the moment.
+ * @returns {Boolean} true if it is ok to change focus from wherever it happens to be at the moment.
  * @param {boolean} [ignoreMessages] if `true` then allow focus request even if there are message boxes in the view
  */
 function canPolitelyChangeFocus(ignoreMessages) {
 	const element = document.activeElement;
-	let result = !element || !element.tagName || element === document.body || element === document.documentElement;
+	let result = !element?.tagName || element === document.body || element === document.documentElement;
 	if (!result) {
 		// ok, something has focus, but let's REALLY make sure it's something sensible because some browsers allow invisible elements to retain focus
 		/*

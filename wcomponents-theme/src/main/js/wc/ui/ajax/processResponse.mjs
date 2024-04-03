@@ -7,7 +7,7 @@ import toDocFragment from "wc/dom/toDocFragment.mjs";
 import timers from "wc/timers.mjs";
 
 let observer;
-const TAG_AJAXTARGET = "wc-ajaxtarget";
+const TAG_AJAXTARGET = "template";
 const ACTIONS = { FILL: "replaceContent", REPLACE: "replace", APPEND: "append", IN: "in" };
 const errorUtils = {
 		ajaxAttr: "data-wc-ajaxalias",
@@ -159,41 +159,21 @@ function processResponseHtml(documentFragment, trigger) {
 		});
 	};
 	if (documentFragment) {
-		let doc;
-		if (documentFragment.querySelector) {
-			doc = documentFragment.querySelector(".wc-ajaxresponse");
-		} else {
-			doc = documentFragment.firstElementChild || documentFragment.firstChild;
+		const targets = documentFragment.querySelectorAll(TAG_AJAXTARGET);
+		for (const next of targets) {
+			next.parentNode.removeChild(next);  // remove the target wrapper
+			let targetId = next.getAttribute("data-id");
+			let element = document.getElementById(targetId);
+			if (element) {
+				let action = next.getAttribute("data-action");
+				insertPayloadIntoDom(element, next.content, action, trigger, false);
+			} else {
+				console.warn("Could not find element", targetId);
+			}
 		}
-		if (doc) {
-			const targets = doc.querySelectorAll(TAG_AJAXTARGET);
-			for (const next of targets) {
-				next.parentNode.removeChild(next);  // remove the target wrapper
-				if (next.nodeType === Node.ELEMENT_NODE) {
-					let targetId = next.getAttribute("data-id");
-					let element = document.getElementById(targetId);
-					if (element) {
-						/* Since the ui:ajaxresponse is essentially thrown away we need to move any of its interesting attributes to the target element.
-						 * In reality this is to catch the onLoadFocusId attribute, but we'll try to pretend it's generic. */
-						mergeAttributes(doc, next);
-						let action = next.getAttribute("data-action");
-						let content = document.createDocumentFragment();
-						while (next.firstChild) {
-							content.appendChild(next.firstChild);
-						}
-						insertPayloadIntoDom(element, content, action, trigger, false);
-					} else {
-						console.warn("Could not find element", targetId);
-					}
-				}
-			}
-			// anything left after all the "target" wrappers are done can probably be inserted straight into the DOM (it's probably debug scripts)
-			if (doc.children.length) {
-				document.body.appendChild(documentFragment);
-			}
-		} else {
-			console.warn("Response does not appear well formed");
-			onError();
+		// anything left after all the "target" wrappers are done can probably be inserted straight into the DOM (it's probably debug scripts)
+		if (documentFragment.children.length) {
+			document.body.appendChild(documentFragment);
 		}
 	} else {
 		console.warn("Response is empty");
@@ -503,9 +483,5 @@ function checkDuplicateIds(content) {
  * utilize browser idle time to asynchronously load resources in a way that does not adversly affect the user.
  */
 timers.setTimeout(errorUtils.fetch, 60000);
-
-if (!customElements.get(TAG_AJAXTARGET)) {
-	customElements.define(TAG_AJAXTARGET, class AjaxTarget extends HTMLElement {});
-}
 
 export default instance;

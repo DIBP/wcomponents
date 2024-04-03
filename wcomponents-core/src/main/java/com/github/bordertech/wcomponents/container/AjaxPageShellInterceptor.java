@@ -60,9 +60,9 @@ public class AjaxPageShellInterceptor extends InterceptorComponent {
 
 		xml.append(XMLUtil.getXMLDeclarationWithThemeXslt(uic));
 		xml.appendTagOpen("template");
-		// xml.append(XMLUtil.STANDARD_NAMESPACES);
-		xml.appendOptionalAttribute("data-wc-defaultfocusid", uic.isFocusRequired() && !Util.empty(focusId),
-				focusId);
+		xml.append(XMLUtil.STANDARD_NAMESPACES);
+		// I can't see that the focus id is honored on AJAX responses anymore. Could get rid of all this?
+		xml.appendOptionalAttribute("data-focusid", uic.isFocusRequired() && !Util.empty(focusId), focusId);
 		xml.appendClose();
 
 		getBackingComponent().paint(renderContext);

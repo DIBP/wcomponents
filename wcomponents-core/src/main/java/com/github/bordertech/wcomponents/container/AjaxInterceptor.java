@@ -30,7 +30,7 @@ public class AjaxInterceptor extends InterceptorComponent {
 	/**
 	 * Tag name for the AJAX Target element.
 	 */
-	public static final String TAG_TARGET = "wc-ajaxtarget";
+	public static final String TAG_TARGET = "template";
 	/**
 	 * Attribute name for the AJAX Target element's "target id".
 	 */
