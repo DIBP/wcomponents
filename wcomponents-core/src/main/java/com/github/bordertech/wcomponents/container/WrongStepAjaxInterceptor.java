@@ -175,7 +175,7 @@ public class WrongStepAjaxInterceptor extends InterceptorComponent {
 		writer.print("<ui:ajaxtarget id=\"" + triggerId + "\" action=\"replace\">");
 
 		// Redirect URL
-		writer.print(String.format("<%s url=\"%s\"></%s>", TAG_REDIRECT, redirectUrl, TAG_REDIRECT));
+		writer.print(String.format("<%1$s url=\"%2$s\"></%1$s>", TAG_REDIRECT, redirectUrl));
 
 		writer.print("</ui:ajaxtarget>");
 		writer.print("</ui:ajaxresponse>");
