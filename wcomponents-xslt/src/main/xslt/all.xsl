@@ -378,12 +378,6 @@
 				<xsl:apply-templates select="$editors" mode="JS" />
 				<xsl:text>]);});</xsl:text>
 			</xsl:if>
-			<xsl:if test="$dialogs">
-				<xsl:text>import("wc/ui/dialog.mjs").then(({ default: c }) => {c.register([</xsl:text>
-				<xsl:apply-templates select="$dialogs" mode="JS" />
-				<xsl:text>]</xsl:text>
-				<xsl:text>);});</xsl:text>
-			</xsl:if>
 			<xsl:if test="$dataListCombos">
 				<xsl:text>import("wc/ui/comboLoader.mjs").then(({ default: c }) => {c.register([</xsl:text>
 				<xsl:apply-templates select="$dataListCombos" mode="registerIds" />

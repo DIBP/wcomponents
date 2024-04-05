@@ -36,6 +36,7 @@ import "wc/ui/comboBox.mjs";
 import "wc/ui/confirm.mjs";
 import "wc/ui/containerload.mjs";
 import "wc/ui/defaultSubmit.mjs";
+import "wc/ui/dialog.mjs";
 import "wc/ui/disabledLink.mjs";
 import "wc/ui/dropdown.mjs";
 import "wc/ui/email.mjs";

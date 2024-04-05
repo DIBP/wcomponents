@@ -14,6 +14,7 @@ import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
  * @since 1.0.0
  */
 final class WDialogRenderer extends AbstractWebXmlRenderer {
+	public static final String TAG_NAME = "wc-dialog";
 
 	/**
 	 * Paints the given WDialog.
@@ -32,7 +33,7 @@ final class WDialogRenderer extends AbstractWebXmlRenderer {
 			String title = dialog.getTitle();
 			XmlStringBuilder xml = renderContext.getWriter();
 
-			xml.appendTagOpen("ui:dialog");
+			xml.appendTagOpen(TAG_NAME);
 			xml.appendAttribute("id", component.getId());
 			xml.appendOptionalAttribute("class", component.getHtmlClass());
 			xml.appendOptionalAttribute("track", component.isTracking(), "true");
@@ -48,7 +49,7 @@ final class WDialogRenderer extends AbstractWebXmlRenderer {
 				if (dialog.hasLegacyTriggerButton()) {
 					xml.appendClose();
 					trigger.paint(renderContext);
-					xml.appendEndTag("ui:dialog");
+					xml.appendEndTag(TAG_NAME);
 				} else {
 					xml.appendEnd();
 				}
