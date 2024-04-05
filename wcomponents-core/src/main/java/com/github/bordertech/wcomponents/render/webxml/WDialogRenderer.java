@@ -34,7 +34,7 @@ final class WDialogRenderer extends AbstractWebXmlRenderer {
 			XmlStringBuilder xml = renderContext.getWriter();
 
 			xml.appendTagOpen(TAG_NAME);
-			xml.appendAttribute("id", component.getId());
+			xml.appendAttribute("data-id", component.getId());
 			xml.appendOptionalAttribute("class", component.getHtmlClass());
 			xml.appendOptionalAttribute("track", component.isTracking(), "true");
 			xml.appendOptionalAttribute("width", width > 0, width);
