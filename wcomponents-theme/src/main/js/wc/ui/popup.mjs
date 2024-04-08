@@ -16,6 +16,7 @@ import uid from "wc/dom/uid.mjs";
 import timers from "wc/timers.mjs";
 
 const processQueueDelay = 1000,
+	TAG_NAME = "wc-dialog",
 	URL_INDEX = 0,
 	NAME_INDEX = 1,
 	SPECS_INDEX = 2,
@@ -44,7 +45,7 @@ const instance = {
 	 *    basically an array of arrays and should be looked into.
 	 */
 	register: function (popupArray) {
-		if (popupArray && popupArray.length) {
+		if (popupArray?.length) {
 			initialise.addCallback(() => timers.setTimeout(processQueue, processQueueDelay, popupArray));
 		}
 		/**
@@ -122,6 +123,46 @@ function clickEvent($event) {
 		popupNow(element);
 		$event.preventDefault();
 	}
+}
+
+/**
+ * Converts a WPopup element to a DTO for registration.
+ * @param {WPopup} element
+ */
+function toDto(element) {
+	const result = [element.getAttribute("url")];
+	result.push(element.getAttribute("target") || uid());
+
+	const dimensions = ["top", "left", "width", "height"].reduce((accumulator, next) => {
+		const value = element.getAttribute(next);
+		if (value) {
+			const feature = `${next}=${value}px`;
+			return accumulator ? `,${accumulator},${feature}` : feature;
+
+		}
+		return accumulator;
+	}, "");
+
+	// Yes we are deliberately ignoring what `resizable` and `scrollbars` are set to because we know better, just ask us.
+	const features = ["menubar", "toolbar", "location", "status"].reduce((accumulator, next) => {
+		const value = element.hasAttribute(next) ? "yes" : "no";
+		return `,${accumulator},${next}=${value}`;
+	}, "resizable=yes,scrollbars=yes");
+
+	const windowFeatures = dimensions ? `${dimensions},${features}` : features;
+	result.push(windowFeatures);
+	return result;
+}
+
+class WPopup extends HTMLElement {
+	connectedCallback() {
+		const dto = toDto(this);
+		instance.register([dto]);
+	}
+}
+
+if (!customElements.get(TAG_NAME)) {
+	customElements.define(TAG_NAME, WPopup);
 }
 
 initialise.register({

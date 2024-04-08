@@ -69,12 +69,13 @@ final class WContentRenderer extends AbstractWebXmlRenderer {
 				break;
 
 			case OPEN_NEW_WINDOW:
-				xml.appendTagOpen("ui:popup");
+				xml.appendTagOpen(WPopupRenderer.TAG_NAME);
 				xml.appendUrlAttribute("url", content.getUrl());
 				xml.appendAttribute("width", content.getWidth().replaceAll("px", ""));
 				xml.appendAttribute("height", content.getHeight().replaceAll("px", ""));
 				xml.appendOptionalAttribute("resizable", content.isResizable(), "true");
-				xml.appendEnd();
+				xml.appendClose();
+				xml.appendEndTag(WPopupRenderer.TAG_NAME);
 				break;
 
 			default:
