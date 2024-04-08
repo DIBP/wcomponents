@@ -329,8 +329,6 @@
 
 	<!-- Common bootstrapping scripts -->
 	<xsl:template name="registrationScripts">
-		<xsl:variable name="componentGroups" select=".//ui:componentGroup" />
-		<xsl:variable name="dialogs" select=".//ui:dialog" />
 		<xsl:variable name="dataListCombos"
 			select=".//ui:dropdown[@data and @type and not(@readOnly)] | .//ui:suggestions[@data]" />
 		<xsl:variable name="dataListComponents"
@@ -362,11 +360,6 @@
 		</xsl:variable>
 		<xsl:variable name="normalizedLibs" select="normalize-space($libs)" />
 		<xsl:variable name="rego">
-			<xsl:if test="$componentGroups">
-				<xsl:text>import("wc/ui/subordinate.mjs").then(({ default: c }) => {c.registerGroups([</xsl:text>
-				<xsl:apply-templates select="$componentGroups" mode="JS" />
-				<xsl:text>]);});</xsl:text>
-			</xsl:if>
 			<xsl:if test="$tableActions">
 				<xsl:text>import("wc/ui/table/action.mjs").then(({ default: c }) => {c.register([</xsl:text>
 				<xsl:apply-templates select="$tableActions" mode="JS" />
