@@ -110,7 +110,7 @@ public class WWindow_Test extends AbstractWComponentTestCase {
 		window.display();
 		window.paint(new WebXmlRenderContext(new PrintWriter(writer)));
 		String xhtml = writer.toString();
-		Assert.assertTrue("Window should have emitted tag", xhtml.indexOf("<ui:popup") != -1);
+		Assert.assertTrue("Window should have emitted tag", xhtml.indexOf("<wc-popup") != -1);
 		Assert.assertTrue("Incorrect window width", xhtml.indexOf("width=\"" + width) != -1);
 		Assert.assertTrue("Incorrect window height", xhtml.indexOf("height=\"" + height) != -1);
 		Assert.assertTrue("Window should be resizable", xhtml.indexOf("resizable=\"true") != -1);
