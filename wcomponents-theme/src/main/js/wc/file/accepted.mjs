@@ -34,35 +34,45 @@ export default function accepted(element, fileInfo) {
 
 	let acceptedTypes = acceptedType.split(",");
 
+	const compareMime = function (actual, reference) {
+		if (actual === reference) {
+			return true;
+		} else if (reference.indexOf("*") === reference.length - 1) {
+			reference = reference.substring(0, reference.length - 1);
+			if (actual.indexOf(reference) === 0) {
+				return true;
+			}
+		}
+		return false;
+	};
+
 	const checkFileArray = function (/** @type {module:wc/file/getMimeType~fileType} */fileType) {
 		let mimeType = fileType.mime || "",
 			extension = fileType.ext ? (`.${fileType.ext}`) : "",
 			passed = (!mimeType && !extension) ||
 				(extension && acceptedType.indexOf(extension) >= 0) ||
 				(mimeType && acceptedType.indexOf(mimeType) >= 0);
-		if (!passed) {  // maybe there is a case difference OR it's a wildcard mimetype or there is some whitespace to be trimmed?
-			for (let i = 0; i < acceptedTypes.length; i++) {
-				let next = acceptedTypes[i].toLowerCase();
-				next = next.trim();
-				if (extension) {
-					extension = extension.toLowerCase();
-					if (extension === next) {
-						passed = true;
-						break;
-					}
+
+		if (passed) {
+			return true; // return straight away after passing first check
+		}
+
+		// maybe there is a case difference OR it's a wildcard mimetype or there is some whitespace to be trimmed?
+		for (let i = 0; i < acceptedTypes.length; i++) {
+			let next = acceptedTypes[i].toLowerCase();
+			next = next.trim();
+			if (extension) {
+				extension = extension.toLowerCase();
+				if (extension === next) {
+					passed = true;
+					break;
 				}
-				if (mimeType) {
-					mimeType = mimeType.toLowerCase();
-					if (mimeType === next) {
-						passed = true;
-						break;
-					} else if (next.indexOf("*") === next.length - 1) {
-						next = next.substring(0, next.length - 1);
-						if (mimeType.indexOf(next) === 0) {
-							passed = true;
-							break;
-						}
-					}
+			}
+			if (mimeType) {
+				mimeType = mimeType.toLowerCase();
+				passed = compareMime(mimeType, next);
+				if (passed){
+					break;
 				}
 			}
 		}
