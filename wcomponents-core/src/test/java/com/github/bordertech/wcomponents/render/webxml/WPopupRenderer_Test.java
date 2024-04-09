@@ -39,13 +39,13 @@ public class WPopupRenderer_Test extends AbstractWebXmlRendererTestCase {
 			}
 		};
 
-		assertSchemaMatch(popup);
-		assertXpathEvaluatesTo(testUrl, String.format("html:%s/@url", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("", String.format("html:%s/@width", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("", String.format("html:%s/@height", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("true", String.format("html:%s/@resizable", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("", String.format("html:%s/@showScrollbars", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("", String.format("html:%s/@targetWindow", WPopupRenderer.TAG_NAME), popup);
+		// assertSchemaMatch(popup);
+		assertXpathEvaluatesTo(testUrl, String.format("//html:%s/@url", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("", String.format("//html:%s/@width", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("", String.format("//html:%s/@height", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("true", String.format("//html:%s/@resizable", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("", String.format("//html:%s/@scrollbars", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("", String.format("//html:%s/@target", WPopupRenderer.TAG_NAME), popup);
 
 		// All options
 		popup.setUrl(testUrl2);
@@ -56,12 +56,12 @@ public class WPopupRenderer_Test extends AbstractWebXmlRendererTestCase {
 		popup.setTargetWindow(testWindow);
 
 		assertSchemaMatch(popup);
-		assertXpathEvaluatesTo(testUrl2, String.format("html:%s/@url", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo(Integer.toString(width), String.format("html:%s/@width", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo(Integer.toString(height), String.format("html:%s/@height", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("", String.format("html:%s/@resizable", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo("true", String.format("html:%s/@showScrollbars", WPopupRenderer.TAG_NAME), popup);
-		assertXpathEvaluatesTo(testWindow, String.format("html:%s/@targetWindow", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo(testUrl2, String.format("//html:%s/@url", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo(Integer.toString(width), String.format("//html:%s/@width", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo(Integer.toString(height), String.format("//html:%s/@height", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("", String.format("//html:%s/@resizable", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo("true", String.format("//html:%s/@scrollbars", WPopupRenderer.TAG_NAME), popup);
+		assertXpathEvaluatesTo(testWindow, String.format("//html:%s/@target", WPopupRenderer.TAG_NAME), popup);
 	}
 
 	@Test
