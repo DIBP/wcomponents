@@ -6,21 +6,21 @@ import i18n from "wc/i18n/i18n.mjs";
 import ajaxRegion from "wc/ui/ajaxRegion.mjs";
 import processResponse from "wc/ui/ajax/processResponse.mjs";
 import eagerLoader from "wc/ui/containerload.mjs";
-import timers from "wc/timers.mjs";
+import debounce from "wc/debounce.mjs";
 import dialogFrame from "wc/ui/dialogFrame.mjs";
 import getForm from "wc/ui/getForm.mjs";
 
 const buttonSelector = "button";
 const anchorSelector = "a";
-
-var // OPENER = BUTTON.extend("", {"data-wc-dialogconf": null}),
+const // OPENER = BUTTON.extend("", {"data-wc-dialogconf": null}),
 	BASE_CLASS = "wc-dialog",
 	registry = {},
 	registryByDialogId = {},
-	keepContentOnClose = false,
-	openOnLoadTimer,
-	openThisDialog,
-	GET_ATTRIB = "data-wc-get";
+	GET_ATTRIB = "data-wc-get",
+	debouncedOpen = debounce(openDlg, 10);
+
+let keepContentOnClose = false,
+	openThisDialog;
 
 /**
  * Provides "dialog" functionality.  NOTE: we currently use a custom dialog because IE native dialog does not call and
@@ -46,10 +46,7 @@ const instance = {
 					}
 				}
 				if (openThisDialog) {
-					if (openOnLoadTimer) {
-						timers.clearTimeout(openOnLoadTimer);
-					}
-					openOnLoadTimer = timers.setTimeout(openDlg, 0, openThisDialog);
+					debouncedOpen(openThisDialog);
 				}
 			});
 		}
@@ -337,6 +334,38 @@ function clickEvent($event) {
 	if (activateClick($event.target)) {
 		$event.preventDefault();
 	}
+}
+
+/**
+ * Converts a WDialog element to a DTO for registration.
+ * @param {WDialog} element
+ * @return module:wc/ui/dialog~regObject
+ */
+function toDto(element) {
+	return {
+		id: element.getAttribute("data-id"),
+		triggerid: element.getAttribute("triggerid"),
+		className: element.getAttribute("class"),
+		track: element.getAttribute("track") === "true",
+		width: Number(element.getAttribute("width")),
+		height: Number(element.getAttribute("height")),
+		top: Number(element.getAttribute("top")),
+		left: Number(element.getAttribute("left")),
+		modal: element.getAttribute("modal") === "true",
+		open: element.getAttribute("open") === "true",
+		title: element.getAttribute("title")
+	};
+}
+
+class WDialog extends HTMLElement {
+	connectedCallback() {
+		const dto = toDto(this);
+		instance.register([dto]);
+	}
+}
+
+if (!customElements.get(BASE_CLASS)) {
+	customElements.define(BASE_CLASS, WDialog);
 }
 
 initialise.register({

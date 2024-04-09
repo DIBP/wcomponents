@@ -8,6 +8,8 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import static com.github.bordertech.wcomponents.render.webxml.WDialogRenderer.TAG_NAME;
+
 /**
  * Junit test case for {@link WDialogRenderer}.
  *
@@ -48,24 +50,25 @@ public class WDialogRenderer_Test extends AbstractWebXmlRendererTestCase {
 		dialog.setLocked(true);
 
 		String xml = renderDialog(dialog);
-		assertXpathEvaluatesTo(dialog.getId(), "//ui:dialog/@id", xml);
-		assertXpathNotExists("//ui:dialog/@modal", xml);
-		assertXpathEvaluatesTo(TEST_TITLE, "//ui:dialog/@title", xml);
-		assertXpathNotExists("//ui:dialog/@width", xml);
-		assertXpathNotExists("//ui:dialog/@height", xml);
-		assertXpathNotExists("//ui:dialog/@triggerid", xml);
+		String foo = TAG_NAME;
+		assertXpathEvaluatesTo(dialog.getId(), String.format("//html:%s/@data-id", TAG_NAME), xml);
+		assertXpathNotExists( String.format("//html:%s/@modal", TAG_NAME), xml);
+		assertXpathEvaluatesTo(TEST_TITLE,  String.format("//html:%s/@title", TAG_NAME), xml);
+		assertXpathNotExists( String.format("//html:%s/@width", TAG_NAME), xml);
+		assertXpathNotExists( String.format("//html:%s/@height", TAG_NAME), xml);
+		assertXpathNotExists( String.format("//html:%s/@triggerid", TAG_NAME), xml);
 
 		int width = 123;
 		int height = 456;
 		dialog.setWidth(width);
 		dialog.setHeight(height);
 		xml = renderDialog(dialog);
-		assertXpathEvaluatesTo(String.valueOf(width), "//ui:dialog/@width", xml);
-		assertXpathEvaluatesTo(String.valueOf(height), "//ui:dialog/@height", xml);
+		assertXpathEvaluatesTo(String.valueOf(width),  String.format("//html:%s/@width", TAG_NAME), xml);
+		assertXpathEvaluatesTo(String.valueOf(height),  String.format("//html:%s/@height", TAG_NAME), xml);
 
 		dialog.setMode(WDialog.MODAL);
 		xml = renderDialog(dialog);
-		assertXpathEvaluatesTo("true", "//ui:dialog/@modal", xml);
+		assertXpathEvaluatesTo("true",  String.format("//html:%s/@modal", TAG_NAME), xml);
 	}
 
 	@Test
@@ -74,11 +77,11 @@ public class WDialogRenderer_Test extends AbstractWebXmlRendererTestCase {
 		WButton content = new WButton("Dialog content");
 
 		WDialog dialog = new WDialog(content, trigger);
-		assertXpathExists("//ui:dialog", dialog);
-		assertXpathEvaluatesTo(dialog.getId(), "//ui:dialog/@id", dialog);
-		assertXpathNotExists("//ui:dialog/@open", dialog);
-		assertXpathEvaluatesTo(trigger.getId(), "//ui:dialog/html:button/@id", dialog);
-		assertXpathEvaluatesTo(trigger.getId(), "//ui:dialog/@triggerid", dialog);
+		assertXpathExists( String.format("//html:%s", TAG_NAME), dialog);
+		assertXpathEvaluatesTo(dialog.getId(),  String.format("//html:%s/@data-id", TAG_NAME), dialog);
+		assertXpathNotExists( String.format("//html:%s/@open", TAG_NAME), dialog);
+		assertXpathEvaluatesTo(trigger.getId(),  String.format("//html:%s/html:button/@id", TAG_NAME), dialog);
+		assertXpathEvaluatesTo(trigger.getId(),  String.format("//html:%s/@triggerid", TAG_NAME), dialog);
 	}
 
 	/**
