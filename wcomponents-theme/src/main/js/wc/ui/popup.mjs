@@ -16,7 +16,7 @@ import uid from "wc/dom/uid.mjs";
 import timers from "wc/timers.mjs";
 
 const processQueueDelay = 1000,
-	TAG_NAME = "wc-dialog",
+	TAG_NAME = "wc-popup",
 	URL_INDEX = 0,
 	NAME_INDEX = 1,
 	SPECS_INDEX = 2,
@@ -133,23 +133,24 @@ function toDto(element) {
 	const result = [element.getAttribute("url")];
 	result.push(element.getAttribute("target") || uid());
 
-	const dimensions = ["top", "left", "width", "height"].reduce((accumulator, next) => {
+	let windowFeatures = ["top", "left", "width", "height"].reduce((accumulator, next) => {
 		const value = element.getAttribute(next);
 		if (value) {
 			const feature = `${next}=${value}px`;
-			return accumulator ? `,${accumulator},${feature}` : feature;
+			return accumulator ? `${accumulator},${feature}` : feature;
 
 		}
 		return accumulator;
 	}, "");
+	const featureAttrs = ["menubar", "toolbar", "location", "status"];
+	if (windowFeatures || featureAttrs.some(feature => element.hasAttribute(feature))) {
+		// Yes we are deliberately ignoring what `resizable` and `scrollbars` are set to because we know better, just ask us.
+		windowFeatures = featureAttrs.reduce((accumulator, next) => {
+			const value = element.hasAttribute(next) ? "yes" : "no";
+			return `${accumulator},${next}=${value}`;
+		}, `${windowFeatures},resizable=yes,scrollbars=yes`);
+	}
 
-	// Yes we are deliberately ignoring what `resizable` and `scrollbars` are set to because we know better, just ask us.
-	const features = ["menubar", "toolbar", "location", "status"].reduce((accumulator, next) => {
-		const value = element.hasAttribute(next) ? "yes" : "no";
-		return `,${accumulator},${next}=${value}`;
-	}, "resizable=yes,scrollbars=yes");
-
-	const windowFeatures = dimensions ? `${dimensions},${features}` : features;
 	result.push(windowFeatures);
 	return result;
 }
