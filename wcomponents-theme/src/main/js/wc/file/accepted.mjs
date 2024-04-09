@@ -34,6 +34,12 @@ export default function accepted(element, fileInfo) {
 
 	let acceptedTypes = acceptedType.split(",");
 
+	const checkFileBasic = function (mimeType, extension) {
+		return (!mimeType && !extension) ||
+			(extension && acceptedType.indexOf(extension) >= 0) ||
+			(mimeType && acceptedType.indexOf(mimeType) >= 0);
+	}
+
 	const compareMime = function (actual, reference) {
 		if (actual === reference) {
 			return true;
@@ -49,9 +55,7 @@ export default function accepted(element, fileInfo) {
 	const checkFileArray = function (/** @type {module:wc/file/getMimeType~fileType} */fileType) {
 		let mimeType = fileType.mime || "",
 			extension = fileType.ext ? (`.${fileType.ext}`) : "",
-			passed = (!mimeType && !extension) ||
-				(extension && acceptedType.indexOf(extension) >= 0) ||
-				(mimeType && acceptedType.indexOf(mimeType) >= 0);
+			passed = checkFileBasic(mimeType, extension);
 
 		if (passed) {
 			return true; // return straight away after passing first check
@@ -71,7 +75,7 @@ export default function accepted(element, fileInfo) {
 			if (mimeType) {
 				mimeType = mimeType.toLowerCase();
 				passed = compareMime(mimeType, next);
-				if (passed){
+				if (passed) {
 					break;
 				}
 			}
