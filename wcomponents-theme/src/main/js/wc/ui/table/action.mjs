@@ -3,9 +3,12 @@ import getFilteredGroup from "wc/dom/getFilteredGroup.mjs";
 import initialise from "wc/dom/initialise.mjs";
 import shed from "wc/dom/shed.mjs";
 import common from "wc/ui/table/common.mjs";
+import pagination from "wc/ui/table/pagination.mjs";
 import debounce from "wc/debounce.mjs";
 
 const registry = new Conditions(enableDisableButton),
+	TAG_ACTION = "wc-tblaction",
+	TAG_CONDITION = "wc-tblcondition",
 	ACTION_CONTAINER = ".wc-actions",
 	ACTION_BUTTON = `${ACTION_CONTAINER} ${common.BUTTON}`,
 	ACTION_TABLE = common.WRAPPER,
@@ -222,6 +225,52 @@ function Conditions(buttonChangeFunc) {
 		}
 		return data[button.id];
 	};
+}
+
+
+class WTableAction extends HTMLElement {
+	connectedCallback() {
+		const dto = this.toDto();
+		instance.register([dto]);
+	}
+
+	toDto() {
+		const button = this.querySelector("button");
+		const result = {
+			trigger: button?.getAttribute("id")
+		};
+		const conditions = /** @type {WCondition[]} */(Array.from(this.querySelectorAll(TAG_CONDITION)));
+		if (conditions.length) {
+			result.conditions = conditions.map(condition => condition.toDto());
+		}
+		return result;
+	}
+}
+
+class WCondition extends HTMLElement {
+	toDto() {
+		const result = {
+			type: this.getAttribute("type"),
+			message: this.getAttribute("message")
+		};
+		["min", "max"].forEach(attr => {
+			if (this.hasAttribute(attr)) {
+				result[attr] = this.getAttribute(attr);
+			}
+		});
+		if (this.hasAttribute("other")) {
+			const hasPagination = pagination.hasPagination(this.closest(common.TABLE));
+			if (hasPagination) {
+				result["otherSelected"] = this.getAttribute("other") || 0;
+			}
+		}
+		return result;
+	}
+}
+
+if (!customElements.get(TAG_ACTION)) {
+	customElements.define(TAG_ACTION, WTableAction);
+	customElements.define(TAG_CONDITION, WCondition);
 }
 
 initialise.register({

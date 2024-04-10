@@ -501,6 +501,17 @@ function clickEvent({ target, defaultPrevented }) {
 	}
 }
 
+export default {
+	/**
+	 * Does this table have pagination?
+	 * @param {HTMLElement} table
+	 * @return {boolean}
+	 */
+	hasPagination: function (table) {
+		return !!table?.querySelector(PAGINATION_CONTAINER);
+	}
+};
+
 /**
  * Subscriber to {@link module:wc/ui/ajax/processReponse}. If the ajax trigger is a dropdown select
  * control, and we have previously stored a button ID we have to refocus to the buttonId. The

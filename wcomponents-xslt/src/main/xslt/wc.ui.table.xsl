@@ -187,7 +187,6 @@
 				<xsl:apply-templates select="ui:thead"/>
 				<xsl:apply-templates select="ui:tbody"/>
 				<xsl:apply-templates select="html:tfoot"/>
-
 			</table>
 			<!--
 				Add table controls which do not form part of the table structure but which control and reference the
@@ -211,6 +210,7 @@
 				</xsl:if>
 			</xsl:element>
 		</div>
+
 	</xsl:template>
 
 	<!--
@@ -921,7 +921,7 @@
 	-->
 	<xsl:template match="ui:actions">
 		<div class="wc-actions">
-			<xsl:apply-templates select="ui:action/html:button"/>
+			<xsl:apply-templates select="html:wc-tblaction/html:button"/>
 		</div>
 	</xsl:template>
 
