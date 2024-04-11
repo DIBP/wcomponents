@@ -227,6 +227,26 @@ function Conditions(buttonChangeFunc) {
 	};
 }
 
+class WCondition extends HTMLElement {
+	toDto() {
+		const result = {
+			type: this.getAttribute("type"),
+			message: this.getAttribute("message")
+		};
+		["min", "max"].forEach(attr => {
+			if (this.hasAttribute(attr)) {
+				result[attr] = this.getAttribute(attr);
+			}
+		});
+		if (this.hasAttribute("other")) {
+			const hasPagination = pagination.hasPagination(this);
+			if (hasPagination) {
+				result["otherSelected"] = Number(this.getAttribute("other")) || 0;
+			}
+		}
+		return result;
+	}
+}
 
 class WTableAction extends HTMLElement {
 	connectedCallback() {
@@ -247,30 +267,9 @@ class WTableAction extends HTMLElement {
 	}
 }
 
-class WCondition extends HTMLElement {
-	toDto() {
-		const result = {
-			type: this.getAttribute("type"),
-			message: this.getAttribute("message")
-		};
-		["min", "max"].forEach(attr => {
-			if (this.hasAttribute(attr)) {
-				result[attr] = this.getAttribute(attr);
-			}
-		});
-		if (this.hasAttribute("other")) {
-			const hasPagination = pagination.hasPagination(this.closest(common.TABLE));
-			if (hasPagination) {
-				result["otherSelected"] = this.getAttribute("other") || 0;
-			}
-		}
-		return result;
-	}
-}
-
-if (!customElements.get(TAG_ACTION)) {
-	customElements.define(TAG_ACTION, WTableAction);
+if (!customElements.get(TAG_CONDITION)) {
 	customElements.define(TAG_CONDITION, WCondition);
+	customElements.define(TAG_ACTION, WTableAction);  // Define action LAST!
 }
 
 initialise.register({

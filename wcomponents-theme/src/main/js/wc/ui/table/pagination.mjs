@@ -392,6 +392,16 @@ function updateRecordDisplays(wrapper, startHTML, endHTML) {
 }
 
 /**
+ * @param {Element} el
+ * @param {string} qs
+ * @return {Element}
+ */
+const findChild = (el, qs) => {
+	const kids = el?.children || [];
+	return Array.from(kids).find(kid => kid.matches(qs));
+};
+
+/**
  * Change the visible page to reflect a change in the selector list. Assumes a change has actually been
  * made, it's up to the caller to ensure that an update is actually necessary.
  *
@@ -406,16 +416,6 @@ function changePage(element, button) {
 		requestAjaxLoad(element);
 		return;
 	}
-
-	/**
-	 * @param {Element} el
-	 * @param {string} qs
-	 * @return {Element}
-	 */
-	const findChild = (el, qs) => {
-		const kids = el?.children || [];
-		return Array.from(kids).find(kid => kid.matches(qs));
-	};
 
 	const wrapper = getWrapper(element);
 	const paginatedTable = findChild(wrapper, TABLE);
@@ -504,11 +504,13 @@ function clickEvent({ target, defaultPrevented }) {
 export default {
 	/**
 	 * Does this table have pagination?
-	 * @param {HTMLElement} table
+	 * @param {HTMLElement} element
 	 * @return {boolean}
 	 */
-	hasPagination: function (table) {
-		return !!table?.querySelector(PAGINATION_CONTAINER);
+	hasPagination: function (element) {
+		const wrapper = getWrapper(element);
+		const paginatedTable = findChild(wrapper, TABLE);
+		return !!paginatedTable;
 	}
 };
 

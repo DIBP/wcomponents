@@ -921,7 +921,7 @@
 	-->
 	<xsl:template match="ui:actions">
 		<div class="wc-actions">
-			<xsl:apply-templates select="html:wc-tblaction/html:button"/>
+			<xsl:apply-templates />
 		</div>
 	</xsl:template>
 
