@@ -144,11 +144,15 @@ function toDto(element) {
 	}, "");
 	const featureAttrs = ["menubar", "toolbar", "location", "status"];
 	if (windowFeatures || featureAttrs.some(feature => element.hasAttribute(feature))) {
+		let initialValue = "resizable=yes,scrollbars=yes";
+		if (windowFeatures) {
+			initialValue = `${windowFeatures},${initialValue}`;
+		}
 		// Yes we are deliberately ignoring what `resizable` and `scrollbars` are set to because we know better, just ask us.
 		windowFeatures = featureAttrs.reduce((accumulator, next) => {
 			const value = element.hasAttribute(next) ? "yes" : "no";
 			return `${accumulator},${next}=${value}`;
-		}, `${windowFeatures},resizable=yes,scrollbars=yes`);
+		}, initialValue);
 	}
 
 	result.push(windowFeatures);
