@@ -1,11 +1,5 @@
-import "wc/ui/popup.mjs";
 import domTesting from "@testing-library/dom";
 import popup from "wc/ui/popup.mjs";
-
-/*
- * Unit tests for wc/ui/modalShim
- * TODO: Add functional tests to test event handlers.
- */
 
 const URL = "http://www.example.com/";
 const popperId = "eg_0c11b0a";
@@ -24,7 +18,7 @@ describe("wc/ui/popup", () => {
 	it("test onload popup with whitespace only target", function(done) {
 		const html = `<wc-popup url="${URL}" target=" "></wc-popup>`;
 		testHolder.innerHTML = html;
-
+		// @ts-ignore
 		spyOn(window, "open").and.callFake((url, target, specs) => {
 			expect(url).toBe(URL);
 			expect(target.length).toBeGreaterThan(1);
