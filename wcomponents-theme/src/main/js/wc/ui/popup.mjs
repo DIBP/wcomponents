@@ -84,13 +84,8 @@ function _open(infoArr) {
 			name = uid();
 		}
 	}
-	const specs = infoArr[SPECS_INDEX];
-	// NOTE: new issue found in IE8 after an update in March 2014!! window.open(url, name, null) no longer has the same effect as window.open(url, name);
-	if (specs) {
-		window.open(infoArr[URL_INDEX], name, specs);
-	} else {
-		window.open(infoArr[URL_INDEX], name);
-	}
+	const specs = infoArr[SPECS_INDEX] || "";
+	window.open(infoArr[URL_INDEX], name, specs);
 }
 
 /**

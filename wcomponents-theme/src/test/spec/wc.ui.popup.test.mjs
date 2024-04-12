@@ -1,6 +1,6 @@
 import "wc/ui/popup.mjs";
-import {beforeEach} from "node:test";
 import domTesting from "@testing-library/dom";
+import popup from "wc/ui/popup.mjs";
 
 /*
  * Unit tests for wc/ui/modalShim
@@ -23,11 +23,12 @@ describe("wc/ui/popup", () => {
 
 	it("test onload popup with whitespace only target", function(done) {
 		const html = `<wc-popup url="${URL}" target=" "></wc-popup>`;
-		testHolder.innerHTML = html;;
+		testHolder.innerHTML = html;
+
 		spyOn(window, "open").and.callFake((url, target, specs) => {
 			expect(url).toBe(URL);
 			expect(target.length).toBeGreaterThan(1);
-			expect(specs).toBeUndefined();
+			expect(specs).toBeFalsy();
 			done();
 		});
 	});
@@ -35,6 +36,7 @@ describe("wc/ui/popup", () => {
 	it("test onload popup with top", function(done) {
 		const html = `<wc-popup url="${URL}" top="100"></wc-popup>`;
 		testHolder.innerHTML = html;
+		// @ts-ignore
 		spyOn(window, "open").and.callFake((url, target, specs) => {
 			expect(url).toBe(URL);
 			expect(target).toBeTruthy();
@@ -46,6 +48,7 @@ describe("wc/ui/popup", () => {
 	it("test onload popup with toolbar and target name", function(done) {
 		const html = `<wc-popup url="${URL}" target="A B C" toolbar="true"></wc-popup>`;
 		testHolder.innerHTML = html;
+		// @ts-ignore
 		spyOn(window, "open").and.callFake((url, target, specs) => {
 			expect(url).toBe(URL);
 			expect(target).withContext("target should be stripped of whitespace").toEqual("ABC");
@@ -57,6 +60,7 @@ describe("wc/ui/popup", () => {
 	it("test onload popup with features, ignores resizable and scrollbars", function(done) {
 		const html = `<wc-popup url="${URL}" height="300" width="280" resizable="no" scrollbars="no" location="yes"></wc-popup>`;
 		testHolder.innerHTML = html;
+		// @ts-ignore
 		spyOn(window, "open").and.callFake((url, target, specs) => {
 			expect(url).toBe(URL);
 			expect(target).toBeTruthy();
@@ -65,23 +69,25 @@ describe("wc/ui/popup", () => {
 		});
 	});
 
-	// it("test popup button click", function(done) {
-	// 	const html = `<button data-testid="${popperId}" type="button" data-wc-url="${URL}">Poppie Uppie</button>`;
-	// 	testHolder.innerHTML = html;
-	// 	const button = domTesting.getByTestId(testHolder, popperId);
-	// 	const event = new MouseEvent("click", {
-	// 		bubbles: true,
-	// 		cancelable: true,
-	// 		view: window
-	// 	});
-	// 	button.dispatchEvent(event);
-	// 	spyOn(window, "open").and.callFake((url, target, specs) => {
-	// 		expect(url).toBe(URL);
-	// 		expect(target).toBeTruthy();
-	// 		checkSpecs(specs);
-	// 		done();
-	// 	});
-	// });
+	it("test popup button click", function(done) {
+		const specString = "height=300px,width=280px";
+		const html = `<button data-wc-specs="${specString}" data-testid="${popperId}" type="button" data-wc-url="${URL}" aria-haspopup="true">Poppie Uppie</button>`;
+		testHolder.innerHTML = html;
+		const button = domTesting.getByTestId(testHolder, popperId);
+		const event = new MouseEvent("click", {
+			bubbles: true,
+			cancelable: true,
+			view: window
+		});
+		// @ts-ignore
+		spyOn(window, "open").and.callFake((url, target, specs) => {
+			expect(url).toEqual(URL);
+			expect(specs).toEqual(specString);
+			done();
+		});
+		expect(popup.isOneOfMe(button)).withContext("The test button is not correct").toBeTruthy();
+		button.dispatchEvent(event);
+	});
 
 	function checkSpecs(specs, overrides={}) {
 		const defaults = {
