@@ -227,25 +227,23 @@ function Conditions(buttonChangeFunc) {
 	};
 }
 
-class WCondition extends HTMLElement {
-	toDto() {
-		const result = {
-			type: this.getAttribute("type"),
-			message: this.getAttribute("message")
-		};
-		["min", "max"].forEach(attr => {
-			if (this.hasAttribute(attr)) {
-				result[attr] = this.getAttribute(attr);
-			}
-		});
-		if (this.hasAttribute("other")) {
-			const hasPagination = pagination.hasPagination(this);
-			if (hasPagination) {
-				result["otherSelected"] = Number(this.getAttribute("other")) || 0;
-			}
+function conditionToDto(element) {
+	const result = {
+		type: element.getAttribute("type"),
+		message: element.getAttribute("message")
+	};
+	["min", "max"].forEach(attr => {
+		if (element.hasAttribute(attr)) {
+			result[attr] = element.getAttribute(attr);
 		}
-		return result;
+	});
+	if (element.hasAttribute("other")) {
+		const hasPagination = pagination.hasPagination(element);
+		if (hasPagination) {
+			result["otherSelected"] = Number(element.getAttribute("other")) || 0;
+		}
 	}
+	return result;
 }
 
 class WTableAction extends HTMLElement {
@@ -259,16 +257,16 @@ class WTableAction extends HTMLElement {
 		const result = {
 			trigger: button?.getAttribute("id")
 		};
-		const conditions = /** @type {WCondition[]} */(Array.from(this.querySelectorAll(TAG_CONDITION)));
+		const conditions = /** @type {HTMLElement[]} */(Array.from(this.querySelectorAll(TAG_CONDITION)));
 		if (conditions.length) {
-			result.conditions = conditions.map(condition => condition.toDto());
+			result.conditions = conditions.map(condition => conditionToDto(condition));
 		}
 		return result;
 	}
 }
 
 if (!customElements.get(TAG_CONDITION)) {
-	customElements.define(TAG_CONDITION, WCondition);
+	customElements.define(TAG_CONDITION, class extends HTMLElement {});
 	customElements.define(TAG_ACTION, WTableAction);  // Define action LAST!
 }
 
