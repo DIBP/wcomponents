@@ -526,19 +526,21 @@ export default {
  * @param {String} triggerId The id of the ajax trigger element.
  */
 function postAjaxSubscriber(element, action, triggerId) {
+	let view = window;
 	if (element) {
+		view = element.ownerDocument.defaultView || view;
 		if (element.matches(TABLE_WRAPPER)) {
 			setUpPageSelectOptions(element);
 		}
 
 		Array.from(element.querySelectorAll(TABLE_WRAPPER)).forEach(setUpPageSelectOptions);
 	}
-	const trigger = (triggerId && triggerButtonId) ? document.getElementById(triggerId) : null;
+	const trigger = (triggerId && triggerButtonId) ? view.document.getElementById(triggerId) : null;
 	if (trigger?.matches(PAGINATION_SELECTOR)) {
 		try {
-			const button = document.getElementById(triggerButtonId);
+			const button = view.document.getElementById(triggerButtonId);
 			if (button) {
-				const { activeElement, body } = document;
+				const { activeElement, body } = view.document;
 				if (!shed.isDisabled(button) && (!activeElement || activeElement === trigger || activeElement === body)) {
 					/* onLoadFocusControl may have already set the focus to the ajax trigger
 					 * so we cannot use it to refocus to the button, but we can determine that

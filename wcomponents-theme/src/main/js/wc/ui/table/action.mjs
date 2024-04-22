@@ -15,6 +15,8 @@ const registry = new Conditions(enableDisableButton),
 	ROW_CONTAINER = common.TBODY,
 	ROW = `${ROW_CONTAINER} > ${common.TR}`;
 
+let view = window;
+
 const instance = {
 	register: actionArray => {
 		actionArray.forEach(registry.set, registry);
@@ -180,7 +182,7 @@ function Conditions(buttonChangeFunc) {
 	this.update = debounce(function() {
 		const changedIds = Object.keys(changed);
 		for (const id of changedIds) {
-			let button = document.getElementById(id);
+			let button = view.document.getElementById(id);
 			if (button) {
 				delete changed[id];
 				button.setAttribute("formnovalidate", "formnovalidate");  // this really only needs to happen once but meh
@@ -291,7 +293,10 @@ initialise.register({
 	 * @public
 	 * @param {Element} element The element being initialised, usually document.body.
 	 */
-	initialise: (element) => event.add(element, "click", clickEvent, -50)
+	initialise: (element) => {
+		event.add(element, "click", clickEvent, -50);
+		view = element.ownerDocument.defaultView || view;
+	}
 });
 
 export default instance;
