@@ -21,6 +21,9 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import static com.github.bordertech.wcomponents.render.webxml.WDataTableRenderer.TAG_ACTION;
+import static com.github.bordertech.wcomponents.render.webxml.WDataTableRenderer.TAG_CONDITION;
+
 /**
  * Junit test case for {@link WDataTableRenderer}.
  *
@@ -536,9 +539,9 @@ public class WDataTableRenderer_Test extends AbstractWebXmlRendererTestCase {
 		component.addAction(new WButton(TEST_ACTION_TWO));
 
 		assertXpathExists("//ui:table/ui:actions", component);
-		assertXpathEvaluatesTo(TEST_ACTION_ONE, "//ui:table/ui:actions/ui:action[1]/html:button",
+		assertXpathEvaluatesTo(TEST_ACTION_ONE, String.format("//ui:table/ui:actions/html:%s[1]/html:button", TAG_ACTION),
 				component);
-		assertXpathEvaluatesTo(TEST_ACTION_TWO, "//ui:table/ui:actions/ui:action[2]/html:button",
+		assertXpathEvaluatesTo(TEST_ACTION_TWO, String.format("//ui:table/ui:actions/html:%s[2]/html:button", TAG_ACTION),
 				component);
 	}
 
@@ -573,29 +576,29 @@ public class WDataTableRenderer_Test extends AbstractWebXmlRendererTestCase {
 				false, message2));
 
 		assertXpathExists("//ui:table/ui:actions", component);
-		assertXpathEvaluatesTo(TEST_ACTION_ONE, "//ui:table/ui:actions/ui:action[1]/html:button",
+		assertXpathEvaluatesTo(TEST_ACTION_ONE, String.format("//ui:table/ui:actions/html:%s[1]/html:button", TAG_ACTION),
 				component);
-		assertXpathEvaluatesTo(TEST_ACTION_TWO, "//ui:table/ui:actions/ui:action[2]/html:button",
+		assertXpathEvaluatesTo(TEST_ACTION_TWO, String.format("//ui:table/ui:actions/html:%s[2]/html:button", TAG_ACTION),
 				component);
 
 		String expectedWarning = "error";
 		assertXpathEvaluatesTo(((new Integer(minSelectedRowCount1))).toString(),
-				"//ui:table/ui:actions/ui:action[1]/ui:condition/@minSelectedRows", component);
+				String.format("//ui:table/ui:actions/html:%s[1]/html:%s/@min", TAG_ACTION, TAG_CONDITION), component);
 		assertXpathEvaluatesTo(((new Integer(maxSelectedRowCount1))).toString(),
-				"//ui:table/ui:actions/ui:action[1]/ui:condition/@maxSelectedRows", component);
+				String.format("//ui:table/ui:actions/html:%s[1]/html:%s/@max", TAG_ACTION, TAG_CONDITION), component);
 		assertXpathEvaluatesTo(expectedWarning,
-				"//ui:table/ui:actions/ui:action[1]/ui:condition/@type", component);
-		assertXpathEvaluatesTo(message1, "//ui:table/ui:actions/ui:action[1]/ui:condition/@message",
+				String.format("//ui:table/ui:actions/html:%s[1]/html:%s/@type", TAG_ACTION, TAG_CONDITION), component);
+		assertXpathEvaluatesTo(message1, String.format("//ui:table/ui:actions/html:%s[1]/html:%s/@message", TAG_ACTION, TAG_CONDITION),
 				component);
 
 		expectedWarning = "warning";
 		assertXpathEvaluatesTo(((new Integer(minSelectedRowCount2))).toString(),
-				"//ui:table/ui:actions/ui:action[2]/ui:condition/@minSelectedRows", component);
+				String.format("//ui:table/ui:actions/html:%s[2]/html:%s/@min", TAG_ACTION, TAG_CONDITION), component);
 		assertXpathEvaluatesTo(((new Integer(maxSelectedRowCount2))).toString(),
-				"//ui:table/ui:actions/ui:action[2]/ui:condition/@maxSelectedRows", component);
+				String.format("//ui:table/ui:actions/html:%s[2]/html:%s/@max", TAG_ACTION, TAG_CONDITION), component);
 		assertXpathEvaluatesTo(expectedWarning,
-				"//ui:table/ui:actions/ui:action[2]/ui:condition/@type", component);
-		assertXpathEvaluatesTo(message2, "//ui:table/ui:actions/ui:action[2]/ui:condition/@message",
+				String.format("//ui:table/ui:actions/html:%s[2]/html:%s/@type", TAG_ACTION, TAG_CONDITION), component);
+		assertXpathEvaluatesTo(message2, String.format("//ui:table/ui:actions/html:%s[2]/html:%s/@message", TAG_ACTION, TAG_CONDITION),
 				component);
 	}
 
