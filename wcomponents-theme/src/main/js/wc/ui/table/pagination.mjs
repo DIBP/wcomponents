@@ -392,6 +392,16 @@ function updateRecordDisplays(wrapper, startHTML, endHTML) {
 }
 
 /**
+ * @param {Element} el
+ * @param {string} qs
+ * @return {Element}
+ */
+const findChild = (el, qs) => {
+	const kids = el?.children || [];
+	return Array.from(kids).find(kid => kid.matches(qs));
+};
+
+/**
  * Change the visible page to reflect a change in the selector list. Assumes a change has actually been
  * made, it's up to the caller to ensure that an update is actually necessary.
  *
@@ -406,16 +416,6 @@ function changePage(element, button) {
 		requestAjaxLoad(element);
 		return;
 	}
-
-	/**
-	 * @param {Element} el
-	 * @param {string} qs
-	 * @return {Element}
-	 */
-	const findChild = (el, qs) => {
-		const kids = el?.children || [];
-		return Array.from(kids).find(kid => kid.matches(qs));
-	};
 
 	const wrapper = getWrapper(element);
 	const paginatedTable = findChild(wrapper, TABLE);
@@ -501,6 +501,19 @@ function clickEvent({ target, defaultPrevented }) {
 	}
 }
 
+export default {
+	/**
+	 * Does this table have pagination?
+	 * @param {HTMLElement} element
+	 * @return {boolean}
+	 */
+	hasPagination: function (element) {
+		const wrapper = getWrapper(element);
+		const paginatedTable = findChild(wrapper, TABLE);
+		return !!paginatedTable;
+	}
+};
+
 /**
  * Subscriber to {@link module:wc/ui/ajax/processReponse}. If the ajax trigger is a dropdown select
  * control, and we have previously stored a button ID we have to refocus to the buttonId. The
@@ -513,19 +526,21 @@ function clickEvent({ target, defaultPrevented }) {
  * @param {String} triggerId The id of the ajax trigger element.
  */
 function postAjaxSubscriber(element, action, triggerId) {
+	let view = window;
 	if (element) {
+		view = element.ownerDocument.defaultView || view;
 		if (element.matches(TABLE_WRAPPER)) {
 			setUpPageSelectOptions(element);
 		}
 
 		Array.from(element.querySelectorAll(TABLE_WRAPPER)).forEach(setUpPageSelectOptions);
 	}
-	const trigger = (triggerId && triggerButtonId) ? document.getElementById(triggerId) : null;
+	const trigger = (triggerId && triggerButtonId) ? view.document.getElementById(triggerId) : null;
 	if (trigger?.matches(PAGINATION_SELECTOR)) {
 		try {
-			const button = document.getElementById(triggerButtonId);
+			const button = view.document.getElementById(triggerButtonId);
 			if (button) {
-				const { activeElement, body } = document;
+				const { activeElement, body } = view.document;
 				if (!shed.isDisabled(button) && (!activeElement || activeElement === trigger || activeElement === body)) {
 					/* onLoadFocusControl may have already set the focus to the ajax trigger
 					 * so we cannot use it to refocus to the button, but we can determine that

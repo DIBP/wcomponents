@@ -199,7 +199,7 @@ const instance = {
 			content.className = CONTENT_BASE_CLASS;
 
 			if (!keepContent) {
-				i18n.translate("loading").then(loadingText => content.innerHTML = loadingText);
+				i18n.translate("loading").then(loadingText => content.innerHTML = /** @type {string} */(loadingText));
 			}
 		}
 	}
@@ -868,7 +868,7 @@ export default instance;
  *   not stored in the registry.
  * @property {Function} onclose Called when the dialog is closed.
  *
- * @typedef {Object} module:wc/ui/dialogFrame~config An object which allows override of aspects of the dialogFrame
+ * @typedef {Object} wc/ui/dialogFrame~config An object which allows override of aspects of the dialogFrame
  * @property {String} [vpUtil="isPhonelike"] A name of a public member of {@link module:wc/ui/viewportUtils. This should only be set if a Sass
  * override is used to change the point at which dialogs become full screen.
  * @property {number} [offset=0.33] the vertical offset to apply when opening a dialog. This must be between 0 and 1 and should be between 0.1

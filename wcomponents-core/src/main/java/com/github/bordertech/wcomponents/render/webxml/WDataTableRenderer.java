@@ -29,6 +29,14 @@ import java.util.List;
  * @since 1.0.0
  */
 final class WDataTableRenderer extends AbstractWebXmlRenderer {
+	/**
+	 * Table action tag name.
+	 */
+	public static final String TAG_ACTION = "wc-tblaction";
+	/**
+	 * Table condition tag name.
+	 */
+	public static final String TAG_CONDITION = "wc-tblcondition";
 
 	/**
 	 * Paints the given WDataTable.
@@ -259,7 +267,7 @@ final class WDataTableRenderer extends AbstractWebXmlRenderer {
 					xml.appendTag("ui:actions");
 				}
 
-				xml.appendTag("ui:action");
+				xml.appendTag(TAG_ACTION);
 
 				List<WDataTable.ActionConstraint> constraints = table.getActionConstraints(button);
 
@@ -270,18 +278,19 @@ final class WDataTableRenderer extends AbstractWebXmlRenderer {
 						String message = constraint.getMessage();
 						String type = constraint.isError() ? "error" : "warning";
 
-						xml.appendTagOpen("ui:condition");
-						xml.appendOptionalAttribute("minSelectedRows", minRows > 0, minRows);
-						xml.appendOptionalAttribute("maxSelectedRows", maxRows > 0, maxRows);
+						xml.appendTagOpen(TAG_CONDITION);
+						xml.appendOptionalAttribute("min", minRows > 0, minRows);
+						xml.appendOptionalAttribute("max", maxRows > 0, maxRows);
 						xml.appendAttribute("type", type);
 						xml.appendAttribute("message", I18nUtilities.format(null, message));
-						xml.appendEnd();
+						xml.appendClose();
+						xml.appendEndTag(TAG_CONDITION);
 					}
 				}
 
 				button.paint(renderContext);
 
-				xml.appendEndTag("ui:action");
+				xml.appendEndTag(TAG_ACTION);
 			}
 
 			if (hasActions) {

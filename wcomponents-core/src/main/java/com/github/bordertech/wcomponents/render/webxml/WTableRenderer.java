@@ -32,6 +32,15 @@ final class
 WTableRenderer extends AbstractWebXmlRenderer {
 
 	/**
+	 * Table action tag name.
+	 */
+	public static final String TAG_ACTION = "wc-tblaction";
+	/**
+	 * Table condition tag name.
+	 */
+	public static final String TAG_CONDITION = "wc-tblcondition";
+
+	/**
 	 * Paints the given WTable.
 	 *
 	 * @param component the WTable to paint.
@@ -307,7 +316,7 @@ WTableRenderer extends AbstractWebXmlRenderer {
 					xml.appendTag("ui:actions");
 				}
 
-				xml.appendTag("ui:action");
+				xml.appendTag(TAG_ACTION);
 
 				List<WTable.ActionConstraint> constraints = table.getActionConstraints(button);
 
@@ -318,19 +327,20 @@ WTableRenderer extends AbstractWebXmlRenderer {
 						String message = constraint.getMessage();
 						String type = constraint.isError() ? "error" : "warning";
 
-						xml.appendTagOpen("ui:condition");
-						xml.appendOptionalAttribute("minSelectedRows", minRows > 0, minRows);
-						xml.appendOptionalAttribute("maxSelectedRows", maxRows > 0, maxRows);
-						xml.appendAttribute("selectedOnOther", this.selectedOnOther);
+						xml.appendTagOpen(TAG_CONDITION);
+						xml.appendOptionalAttribute("min", minRows > 0, minRows);
+						xml.appendOptionalAttribute("max", maxRows > 0, maxRows);
+						xml.appendAttribute("other", this.selectedOnOther);
 						xml.appendAttribute("type", type);
 						xml.appendAttribute("message", I18nUtilities.format(null, message));
-						xml.appendEnd();
+						xml.appendClose();
+						xml.appendEndTag(TAG_CONDITION);
 					}
 				}
 
 				button.paint(renderContext);
 
-				xml.appendEndTag("ui:action");
+				xml.appendEndTag(TAG_ACTION);
 			}
 
 			if (hasActions) {

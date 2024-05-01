@@ -3,14 +3,19 @@ import getFilteredGroup from "wc/dom/getFilteredGroup.mjs";
 import initialise from "wc/dom/initialise.mjs";
 import shed from "wc/dom/shed.mjs";
 import common from "wc/ui/table/common.mjs";
+import pagination from "wc/ui/table/pagination.mjs";
 import debounce from "wc/debounce.mjs";
 
 const registry = new Conditions(enableDisableButton),
+	TAG_ACTION = "wc-tblaction",
+	TAG_CONDITION = "wc-tblcondition",
 	ACTION_CONTAINER = ".wc-actions",
 	ACTION_BUTTON = `${ACTION_CONTAINER} ${common.BUTTON}`,
 	ACTION_TABLE = common.WRAPPER,
 	ROW_CONTAINER = common.TBODY,
 	ROW = `${ROW_CONTAINER} > ${common.TR}`;
+
+let view = window;
 
 const instance = {
 	register: actionArray => {
@@ -177,7 +182,7 @@ function Conditions(buttonChangeFunc) {
 	this.update = debounce(function() {
 		const changedIds = Object.keys(changed);
 		for (const id of changedIds) {
-			let button = document.getElementById(id);
+			let button = view.document.getElementById(id);
 			if (button) {
 				delete changed[id];
 				button.setAttribute("formnovalidate", "formnovalidate");  // this really only needs to happen once but meh
@@ -224,6 +229,49 @@ function Conditions(buttonChangeFunc) {
 	};
 }
 
+function conditionToDto(element) {
+	const result = {
+		type: element.getAttribute("type"),
+		message: element.getAttribute("message")
+	};
+	["min", "max"].forEach(attr => {
+		if (element.hasAttribute(attr)) {
+			result[attr] = element.getAttribute(attr);
+		}
+	});
+	if (element.hasAttribute("other")) {
+		const hasPagination = pagination.hasPagination(element);
+		if (hasPagination) {
+			result["otherSelected"] = Number(element.getAttribute("other")) || 0;
+		}
+	}
+	return result;
+}
+
+class WTableAction extends HTMLElement {
+	connectedCallback() {
+		const dto = this.toDto();
+		instance.register([dto]);
+	}
+
+	toDto() {
+		const button = this.querySelector("button");
+		const result = {
+			trigger: button?.getAttribute("id")
+		};
+		const conditions = /** @type {HTMLElement[]} */(Array.from(this.querySelectorAll(TAG_CONDITION)));
+		if (conditions.length) {
+			result.conditions = conditions.map(condition => conditionToDto(condition));
+		}
+		return result;
+	}
+}
+
+if (!customElements.get(TAG_CONDITION)) {
+	customElements.define(TAG_CONDITION, class extends HTMLElement {});
+	customElements.define(TAG_ACTION, WTableAction);  // Define action LAST!
+}
+
 initialise.register({
 	/**
 	 * Initial set up for table action.
@@ -245,7 +293,10 @@ initialise.register({
 	 * @public
 	 * @param {Element} element The element being initialised, usually document.body.
 	 */
-	initialise: (element) => event.add(element, "click", clickEvent, -50)
+	initialise: (element) => {
+		event.add(element, "click", clickEvent, -50);
+		view = element.ownerDocument.defaultView || view;
+	}
 });
 
 export default instance;

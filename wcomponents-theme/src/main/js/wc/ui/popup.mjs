@@ -84,13 +84,8 @@ function _open(infoArr) {
 			name = uid();
 		}
 	}
-	const specs = infoArr[SPECS_INDEX];
-	// NOTE: new issue found in IE8 after an update in March 2014!! window.open(url, name, null) no longer has the same effect as window.open(url, name);
-	if (specs) {
-		window.open(infoArr[URL_INDEX], name, specs);
-	} else {
-		window.open(infoArr[URL_INDEX], name);
-	}
+	const specs = infoArr[SPECS_INDEX] || "";
+	window.open(infoArr[URL_INDEX], name, specs);
 }
 
 /**
@@ -144,11 +139,15 @@ function toDto(element) {
 	}, "");
 	const featureAttrs = ["menubar", "toolbar", "location", "status"];
 	if (windowFeatures || featureAttrs.some(feature => element.hasAttribute(feature))) {
+		let initialValue = "resizable=yes,scrollbars=yes";
+		if (windowFeatures) {
+			initialValue = `${windowFeatures},${initialValue}`;
+		}
 		// Yes we are deliberately ignoring what `resizable` and `scrollbars` are set to because we know better, just ask us.
 		windowFeatures = featureAttrs.reduce((accumulator, next) => {
 			const value = element.hasAttribute(next) ? "yes" : "no";
 			return `${accumulator},${next}=${value}`;
-		}, `${windowFeatures},resizable=yes,scrollbars=yes`);
+		}, initialValue);
 	}
 
 	result.push(windowFeatures);
