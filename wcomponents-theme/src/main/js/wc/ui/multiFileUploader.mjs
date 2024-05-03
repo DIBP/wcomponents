@@ -202,12 +202,21 @@ function MultiFileUploader() {
 		const input = /** @type {HTMLInputElement} */ (
 			element.matches(inputElementWd) ? element : element.querySelector(inputElementWd));
 		if (input) {
+			let called = false;
+			const callback = () => {
+				if (!called) {
+					called = true;
+					checkDoUpload(input, files, suppressEdit);
+				}
+			};
+
 			/*
 			 * The focus is primarily necessary to bootstrap the file widget.
 			 * This is critical if the file widget is needs to be wired up by
 			 * other controllers such as ajax trigger.
 			 */
-			focus.setFocusRequest(input, () => checkDoUpload(input, files, suppressEdit));
+			focus.setFocusRequest(input, callback);
+			setTimeout(callback, 10);  // because setFocusRequest does not guarantee the callback will be called!
 		}
 	};
 
