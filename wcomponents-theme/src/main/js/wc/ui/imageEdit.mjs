@@ -108,7 +108,7 @@ const imageEdit = {
 
 	/**
 	 * Shares a method signature with multifileuploader upload (which overrides this method).
-	 * @type {function(Element, File[], boolean?): void}
+	 * @type {function(Element, File[], boolean=): void}
 	 */
 	upload: () => {},
 
@@ -378,6 +378,7 @@ function editFile(config, file, win, lose) {
 			} else if (file) {
 				const fileReader = new FileReader();
 				fileReader.onload = function ($event) {
+					// @ts-ignore
 					imageEdit.renderImage($event.target.result, function() {
 						validateImage(file, editor).then(function(message) {
 							if (message) {
@@ -436,7 +437,7 @@ function handleInline(inline) {
 					id: config.id,
 					name: config.id,
 					files: [config.image]
-				});
+				}, () => {}, () => {});
 			}
 		});
 	}
@@ -449,7 +450,7 @@ function handleInline(inline) {
  * @param {number} availHeight The height of the canvas.
  * @param {number} imgWidth The raw image width.
  * @param {number} imgHeight The raw image height.
- * @param {fabric.Image} fbImage The image we are limiting
+ * @param fbImage The fabric.Image we are limiting
  * @returns {number} The minimum scale to keep this image from getting too small.
  */
 function calcMinScale(availWidth, availHeight, imgWidth, imgHeight, fbImage) {
@@ -531,7 +532,7 @@ function getEditorContext(config, callbacks) {
  * Builds the editor DOM and displays it to the user.
  * @param {Object} config Map of configuration properties.
  * @param {Object} callbacks An object with two callbacks: "win" and "lose".
- * @param {File} file The file being edited.
+ * @param {File|string} file The file being edited.
  * @returns {Promise<Element>} Resolved with the top level editor DOM element when it is ready.
  * @function
  * @private
@@ -590,7 +591,7 @@ function getEditor(config, callbacks, file) {
 				}
 				return cntnr;
 			};
-		return getTranslations(editorProps).then(() =>{
+		return getTranslations(editorProps).then(() => {
 			container.className = "wc_img_editor";
 			container.setAttribute("data-wc-editor", config.id);
 			return new Promise((win, lose) => {
@@ -603,8 +604,7 @@ function getEditor(config, callbacks, file) {
 						lose(ex);
 					}
 				}, 0);
-			})
-			return container;
+			});
 		});
 	}  // end "renderEditor"
 	return getEditorContext(config, callbacks);
@@ -1231,7 +1231,7 @@ function saveImage(args) {
 /**
  * Before saving the image we may wish to discard any scaling the user has performed.
  * This function removes scaling on the image and preserves relative ratios with other objects on the canvas.
- * @param {fabric.Image} fbImage The image to un-scale.
+ * @param fbImage The fabric.Image to un-scale.
  */
 function unscale(fbImage) {
 	// Original size of image
