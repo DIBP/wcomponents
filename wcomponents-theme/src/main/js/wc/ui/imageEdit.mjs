@@ -124,8 +124,8 @@ const imageEdit = {
 	 */
 	getConfig: function(obj) {
 		let result = wcconfig.get("wc/ui/imageEdit", this.defaults);
-		let instanceConfig = registeredIds[obj.id] || registeredIds[obj.name];
 		if (obj) {
+			let instanceConfig = registeredIds[obj.id] || registeredIds[obj.name];
 			if (!instanceConfig) {
 				let editorId = ("getAttribute" in obj) ? obj.getAttribute("data-wc-editor") : obj.editorId;
 				if (editorId) {
@@ -593,10 +593,17 @@ function getEditor(config, callbacks, file) {
 		return getTranslations(editorProps).then(() =>{
 			container.className = "wc_img_editor";
 			container.setAttribute("data-wc-editor", config.id);
-			timers.setTimeout(() => {
-				container.innerHTML = getDialogContent(editorProps);
-				done(container);
-			}, 0);
+			return new Promise((win, lose) => {
+				timers.setTimeout(() => {
+					try {
+						container.innerHTML = getDialogContent(editorProps);
+						done(container);
+						win(container);
+					} catch (ex) {
+						lose(ex);
+					}
+				}, 0);
+			})
 			return container;
 		});
 	}  // end "renderEditor"
@@ -1374,7 +1381,7 @@ function hasChanged(config) {
 		const fbImage = imageEdit.getFbImage();
 		if (fbImage && config.crop) {
 			// When the image is initially loaded it is scaled to fit. If "crop" is true this will NOT be undone on save and should be considered an "edit".
-			result = fbImage.scaleX !== 1 || fbImage.scaleY !== 1;  // Note that this check problably makes autoresize redundant in most cases
+			result = fbImage.scaleX !== 1 || fbImage.scaleY !== 1;  // Note that this check probably makes autoresize redundant in most cases
 			if (result) {
 				console.log("Image has been automatically scaled");
 			}
