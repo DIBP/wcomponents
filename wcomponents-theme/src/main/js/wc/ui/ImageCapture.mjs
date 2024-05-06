@@ -6,10 +6,10 @@ import wcconfig from "wc/config.mjs";
  * This is not a truly reusable module, it is part of imageEdit.js but has been split out for ease of maintenance.
  *
  * TODO allow user to select video source or rely on platform to provide this?
- * @param {import('wc/ui/ImageEdit')} imageEdit The instance of ImageEdit this is really part of (yes we're bypassing requirejs going this way)
+ * @param {import('wc/ui/imageEdit.mjs')} imageEdit The instance of ImageEdit this is really part of (yes we're bypassing requirejs going this way)
  * @constructor
  */
-function ImageCapture(imageEdit) {
+function WCImageCapture(imageEdit) {
 	const VIDEO_CONTAINER = "wc_img_video_container",
 		defaultOptions = {
 			video: true,  // { facingMode: "user" },
@@ -105,9 +105,9 @@ function ImageCapture(imageEdit) {
 				if (isNaN(height)) {
 					height = currentOptions.width / (currentOptions.width / currentOptions.height);
 				}
-
-				video.setAttribute("width", currentOptions.width);
-				video.setAttribute("height", String(height));
+				video.setAttribute("style", `width:${currentOptions.width}px; height:${height}px;`);
+				video.setAttribute("width", video.videoWidth + "px");
+				video.setAttribute("height", video.videoHeight + "px");
 
 				streaming = true;
 			}
@@ -170,8 +170,8 @@ function ImageCapture(imageEdit) {
 	function videoToDataUrl(video, scale) {
 		const scaleFactor = scale || 1,
 			onCanvas = document.createElement("canvas");
-		onCanvas.width = video.videoWidth * scaleFactor;
-		onCanvas.height = video.videoHeight * scaleFactor;
+		onCanvas.width = video.videoWidth;
+		onCanvas.height = video.videoHeight;
 		onCanvas.getContext("2d").drawImage(video, 0, 0, onCanvas.width, onCanvas.height);
 		return onCanvas.toDataURL();
 	}
@@ -198,7 +198,7 @@ function ImageCapture(imageEdit) {
 		}
 		let result = container.querySelector("video");
 		if (createNew && !result) {
-			result = document.createElement('video');
+			result = document.createElement("video");
 			const offsetWidth = container.offsetWidth;
 			const offsetHeight = container.offsetHeight;
 
@@ -206,8 +206,9 @@ function ImageCapture(imageEdit) {
 				currentOptions.width = offsetWidth;
 				currentOptions.height = offsetHeight;
 			}
-			result.width = currentOptions.width;
-			result.height = currentOptions.height;
+			//result.width = currentOptions.width;
+			// result.height = currentOptions.height;
+			result.setAttribute("style", `width:${currentOptions.width}px; height:${currentOptions.height}px;`);
 			result.autoplay = true;
 			container.appendChild(result);
 		}
@@ -215,4 +216,4 @@ function ImageCapture(imageEdit) {
 	}
 }
 
-export default ImageCapture;
+export default WCImageCapture;

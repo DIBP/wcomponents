@@ -5,12 +5,12 @@ import timers from "wc/timers.mjs";
 import prompt from "wc/ui/prompt.mjs";
 import i18n from "wc/i18n/i18n.mjs";
 import dialogFrame from "wc/ui/dialogFrame.mjs";
-import ImageCapture from "wc/ui/ImageCapture.mjs";
+import WCImageCapture from "wc/ui/ImageCapture.mjs";
 import ImageUndoRedo from "wc/ui/ImageUndoRedo.mjs";
 import fileSize from "wc/file/size.mjs";
 import fileUtil from "wc/file/util.mjs";
 
-let fabric, timer, imageCapture;
+let fabric, timer, wcImageCapture;
 let inited,
 	overlayUrl,
 	undoRedo,
@@ -242,14 +242,14 @@ const imageEdit = {
 			const imageWidth = fabricImage.getScaledWidth();
 			const imageHeight = fabricImage.getScaledHeight();
 			if (imageWidth > imageHeight) {
-				// fbCanvas.setZoom(width / imageWidth);
-				fabricImage.scaleToWidth(width).setCoords();
+				fbCanvas.setZoom(width / imageWidth);
+				// fabricImage.scaleToWidth(width).setCoords();
 			} else {
-				// fbCanvas.setZoom(height / imageHeight);
-				fabricImage.scaleToHeight(height).setCoords();
+				fbCanvas.setZoom(height / imageHeight);
+				// fabricImage.scaleToHeight(height).setCoords();
 			}
-			fabricImage.width = imageWidth;
-			fabricImage.height = imageHeight;
+			// fabricImage.width = imageWidth;
+			// fabricImage.height = imageHeight;
 			calcMinScale(width, height, imageWidth, imageHeight, fabricImage);
 			fbCanvas.clear();
 			addToCanvas(fabricImage);
@@ -315,14 +315,14 @@ function addToCanvas(object) {
 }
 
 /**
- * Allows for lazy instantiation of ImageCapture.
- * @returns {ImageCapture} Instance of ImageCapture.
+ * Allows for lazy instantiation of WCImageCapture.
+ * @returns {WCImageCapture} Instance of WCImageCapture.
  */
 function getImageCapture() {
-	if (!imageCapture) {
-		imageCapture = new ImageCapture(imageEdit);
+	if (!wcImageCapture) {
+		wcImageCapture = new WCImageCapture(imageEdit);
 	}
-	return imageCapture;
+	return wcImageCapture;
 }
 
 
@@ -1351,8 +1351,8 @@ function canvasToDataUrl() {
 		} else {
 			object = unscale(fbImage);
 			toDataUrlParams = {
-				left: object.get('left'),
-				top: object.get('top'),
+				left: object.get("left"),
+				top: object.get("top"),
 				width: object.getScaledWidth(),
 				height: object.getScaledHeight()
 			};
