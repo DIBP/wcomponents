@@ -45,7 +45,12 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 				xml.appendAttribute("mode", "lazy");
 				break;
 			case EAGER:
+//				xml.appendAttribute("mode", "eager");  // FIXME cleanup
+				xml.appendTagOpen("wc-ajax");
 				xml.appendAttribute("mode", "eager");
+				xml.appendClose();
+				xml.append(component.getId());
+				xml.appendEndTag("wc-ajax");
 				break;
 			case DYNAMIC:
 				xml.appendAttribute("mode", "dynamic");

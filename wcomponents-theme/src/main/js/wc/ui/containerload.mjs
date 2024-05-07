@@ -242,4 +242,17 @@ function processNow(idArr) {
 //    load containers (collapsible, tab etc.)
 initialise.addCallback(init);
 
+const eagerTag = "wc-ajax";  // to be replaced, temporary way of spotting eager components
+class WEager extends HTMLElement {
+	attributeChangedCallback() {
+		if (this.getAttribute("mode") === "eager") {
+			instance.register([this.innerHTML]);
+		}
+	}
+}
+
+if (!customElements.get(eagerTag)) {
+	customElements.define(eagerTag, WEager);
+}
+
 export default instance;

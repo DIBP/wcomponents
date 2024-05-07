@@ -10,6 +10,8 @@ import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.layout.LayoutManager;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 
+import java.util.Objects;
+
 /**
  * The {@link Renderer} for the {@link WPanel} component.
  *
@@ -47,6 +49,14 @@ final class WPanelRenderer extends AbstractWebXmlRenderer {
 		xml.appendOptionalAttribute("title", titleText);
 		xml.appendOptionalAttribute("type", getPanelType(panel));
 		xml.appendOptionalAttribute("mode", getPanelMode(panel));
+
+		if (PanelMode.EAGER.equals(panel.getMode())) {
+			xml.appendTagOpen("wc-ajax");
+			xml.appendAttribute("mode", "eager");
+			xml.appendClose();
+			xml.append(component.getId());
+			xml.appendEndTag("wc-ajax");
+		}
 
 		AccessKeyRendererUtil.appendOptionalAccessKeyXMLAttribute(panel, renderContext);
 
