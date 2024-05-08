@@ -244,6 +244,8 @@ initialise.addCallback(init);
 
 const eagerTag = "wc-ajax";  // to be replaced, temporary way of spotting eager components
 class WEager extends HTMLElement {
+	static observedAttributes = ["mode"];
+
 	attributeChangedCallback() {
 		if (this.getAttribute("mode") === "eager") {
 			instance.register([this.innerHTML]);

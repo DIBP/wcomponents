@@ -50,7 +50,8 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 				xml.appendTagOpen("wc-ajax");
 				xml.appendAttribute("mode", "eager");
 				xml.appendClose();
-				xml.append(component.getId());
+				xml.append(collapsible.getId());
+				xml.append("-content");
 				xml.appendEndTag("wc-ajax");
 				break;
 			case DYNAMIC:
