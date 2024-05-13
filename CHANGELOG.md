@@ -5,6 +5,9 @@
 ### API Changes
 ### Enhancements
 ### Bug Fixes
+* Only allow i18n to initialise once as translating strings was unreliable
+* Move calling i18n from initialise to be later in focus event for selectBoxSearch
+* Backport dayName and monthName from future branch for better i18n initialisation
 
 ## 1.5.30
 
