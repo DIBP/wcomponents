@@ -5,8 +5,8 @@ import debounce from "wc/debounce.mjs";
 const checked = {};
 const onload = debounce(languages => {
 	try {
-		if (languages) {
-			const langs = Object.keys(languages);
+		const langs = languages ? Object.keys(languages) : i18next.languages;
+		if (langs) {
 			for (let i = 0; i < langs.length; i++) {
 				let nextLang = langs[i];
 				if (nextLang && !checked.hasOwnProperty(nextLang)) {
@@ -18,9 +18,12 @@ const onload = debounce(languages => {
 	} catch (ex) {
 		console.warn(ex);  // don't die checking missing translations and other debug fluff
 	}
-}, 3000);  // this does not need to happen in a hurry
+}, 10000);  // this does not need to happen in a hurry
 
-i18next.on("loaded", () => onload());
+i18next.on("loaded", onload);
+if (i18next.languages.length) {
+	onload();  // it seems to have already loaded something, so the onload event handler won't be triggered
+}
 
 /**
  * Check for missing translations in this language's resource bundle.
