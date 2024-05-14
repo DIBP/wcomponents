@@ -1,5 +1,3 @@
-import {setUpExternalHTML} from "../helpers/specUtils.mjs";
-import {setView} from "wc/dom/initialise.mjs";
 import Trigger from "wc/ajax/Trigger.mjs";
 import containerload from "wc/ui/containerload.mjs";
 
@@ -24,9 +22,10 @@ describe("wc/dom/containerload", () => {
 
 		for (let i = 0; i < ids.length; i++) {
 			html += `
-				<div id=${ids[i]}></div>
-				<wc-ajax mode="eager">${ids[i]}</wc-ajax>
-			`;
+				<div id="container${i}">
+					<wc-ajax mode="eager">${ids[i]}</wc-ajax>
+					<div id="${ids[i]}"></div>
+				</div>`;
 		}
 
 		spyOn(Trigger.prototype, "fire").and.callFake(() => {

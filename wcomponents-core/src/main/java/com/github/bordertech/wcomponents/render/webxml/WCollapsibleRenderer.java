@@ -1,11 +1,7 @@
 package com.github.bordertech.wcomponents.render.webxml;
 
-import com.github.bordertech.wcomponents.AjaxHelper;
-import com.github.bordertech.wcomponents.HeadingLevel;
-import com.github.bordertech.wcomponents.WCollapsible;
+import com.github.bordertech.wcomponents.*;
 import com.github.bordertech.wcomponents.WCollapsible.CollapsibleMode;
-import com.github.bordertech.wcomponents.WComponent;
-import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 import com.github.bordertech.wcomponents.util.SystemException;
 
@@ -47,12 +43,6 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 				break;
 			case EAGER:
 //				xml.appendAttribute("mode", "eager");  // FIXME cleanup
-				xml.appendTagOpen("wc-ajax");
-				xml.appendAttribute("mode", "eager");
-				xml.appendClose();
-				xml.append(collapsible.getId());
-				xml.append("-content");
-				xml.appendEndTag("wc-ajax");
 				break;
 			case DYNAMIC:
 				xml.appendAttribute("mode", "dynamic");
@@ -70,6 +60,17 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 		}
 
 		xml.appendClose();
+
+		CollapsibleMode mode = collapsible.getMode();
+		if (mode != null && mode.equals(CollapsibleMode.EAGER)) {
+			xml.appendTagOpen("wc-ajax");
+			xml.appendAttribute("mode", "eager");
+			xml.appendClose();
+			xml.append(collapsible.getId());
+			xml.append("-content");
+			xml.appendEndTag("wc-ajax");
+		}
+
 
 		// Render margin
 		MarginRendererUtil.renderMargin(collapsible, renderContext);

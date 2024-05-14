@@ -1,12 +1,7 @@
 package com.github.bordertech.wcomponents.render.webxml;
 
-import com.github.bordertech.wcomponents.AjaxHelper;
-import com.github.bordertech.wcomponents.WComponent;
-import com.github.bordertech.wcomponents.WMenu;
-import com.github.bordertech.wcomponents.WSubMenu;
+import com.github.bordertech.wcomponents.*;
 import com.github.bordertech.wcomponents.WSubMenu.MenuMode;
-import com.github.bordertech.wcomponents.WebUtilities;
-import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 import com.github.bordertech.wcomponents.util.SystemException;
 
@@ -99,12 +94,6 @@ final class WSubMenuRenderer extends AbstractWebXmlRenderer {
 				break;
 			case EAGER:
 //				xml.appendAttribute("mode", "eager");   // FIXME cleanup
-				xml.appendTagOpen("wc-ajax");
-				xml.appendAttribute("mode", "eager");
-				xml.appendClose();
-				xml.append(menu.getId());
-				xml.append("-content");
-				xml.appendEndTag("wc-ajax");
 				break;
 			case DYNAMIC:
 			case SERVER:
@@ -121,6 +110,16 @@ final class WSubMenuRenderer extends AbstractWebXmlRenderer {
 		menu.getDecoratedLabel().paint(renderContext);
 
 		MenuMode mode = menu.getMode();
+
+		if (mode != null && mode.equals(MenuMode.EAGER)) {
+			xml.appendTagOpen("wc-ajax");
+			xml.appendAttribute("mode", "eager");
+			xml.appendClose();
+			xml.append(menu.getId());
+			xml.append("-content");
+			xml.appendEndTag("wc-ajax");
+		}
+
 
 		// Paint submenu items
 		xml.appendTagOpen("ui:content");

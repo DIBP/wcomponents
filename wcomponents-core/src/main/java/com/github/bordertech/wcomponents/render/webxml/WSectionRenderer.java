@@ -47,11 +47,6 @@ final class WSectionRenderer extends AbstractWebXmlRenderer {
 					break;
 				case EAGER:
 //					xml.appendAttribute("mode", "eager");  // FIXME cleanup
-					xml.appendTagOpen("wc-ajax");
-					xml.appendAttribute("mode", "eager");
-					xml.appendClose();
-					xml.append(component.getId());
-					xml.appendEndTag("wc-ajax");
 					break;
 				default:
 					throw new SystemException("Unknown section mode: " + section.getMode());
@@ -59,6 +54,14 @@ final class WSectionRenderer extends AbstractWebXmlRenderer {
 		}
 
 		xml.appendClose();
+
+		if (mode != null && mode.equals(SectionMode.EAGER)) {
+			xml.appendTagOpen("wc-ajax");
+			xml.appendAttribute("mode", "eager");
+			xml.appendClose();
+			xml.append(component.getId());
+			xml.appendEndTag("wc-ajax");
+		}
 
 		// Render margin
 		MarginRendererUtil.renderMargin(section, renderContext);

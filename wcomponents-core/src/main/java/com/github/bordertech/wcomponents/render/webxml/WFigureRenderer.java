@@ -1,10 +1,7 @@
 package com.github.bordertech.wcomponents.render.webxml;
 
-import com.github.bordertech.wcomponents.AjaxHelper;
-import com.github.bordertech.wcomponents.WComponent;
-import com.github.bordertech.wcomponents.WFigure;
+import com.github.bordertech.wcomponents.*;
 import com.github.bordertech.wcomponents.WFigure.FigureMode;
-import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 import com.github.bordertech.wcomponents.util.SystemException;
 
@@ -47,12 +44,6 @@ final class WFigureRenderer extends AbstractWebXmlRenderer {
 					break;
 				case EAGER:
 //					xml.appendAttribute("mode", "eager"); // FIXME cleanup
-					xml.appendTagOpen("wc-ajax");
-					xml.appendAttribute("mode", "eager");
-					xml.appendClose();
-					xml.append(figure.getId());
-					xml.append("-content");
-					xml.appendEndTag("wc-ajax");
 					break;
 				default:
 					throw new SystemException("Unknown figure mode: " + figure.getMode());
@@ -60,6 +51,16 @@ final class WFigureRenderer extends AbstractWebXmlRenderer {
 		}
 
 		xml.appendClose();
+
+		if (mode != null && mode.equals(FigureMode.EAGER)) {
+			xml.appendTagOpen("wc-ajax");
+			xml.appendAttribute("mode", "eager");
+			xml.appendClose();
+			xml.append(figure.getId());
+			xml.append("-content");
+			xml.appendEndTag("wc-ajax");
+		}
+
 
 		// Render margin
 		MarginRendererUtil.renderMargin(figure, renderContext);

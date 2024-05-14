@@ -1,11 +1,7 @@
 package com.github.bordertech.wcomponents.render.webxml;
 
-import com.github.bordertech.wcomponents.AjaxHelper;
-import com.github.bordertech.wcomponents.Renderer;
-import com.github.bordertech.wcomponents.WComponent;
-import com.github.bordertech.wcomponents.WTab;
+import com.github.bordertech.wcomponents.*;
 import com.github.bordertech.wcomponents.WTabSet.TabMode;
-import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 import com.github.bordertech.wcomponents.util.SystemException;
 
@@ -46,12 +42,6 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 				break;
 			case EAGER:
 //				xml.appendAttribute("mode", "eager");  // FIXME cleanup
-				xml.appendTagOpen("wc-ajax");
-				xml.appendAttribute("mode", "eager");
-				xml.appendClose();
-				xml.append(tab.getId());
-				xml.append("-content");
-				xml.appendEndTag("wc-ajax");
 				break;
 			case DYNAMIC:
 				xml.appendAttribute("mode", "dynamic");
@@ -66,6 +56,16 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 		AccessKeyRendererUtil.appendOptionalAccessKeyXMLAttribute(tab, renderContext);
 
 		xml.appendClose();
+
+		TabMode mode = tab.getMode();
+		if (mode != null && mode.equals(TabMode.EAGER)) {
+			xml.appendTagOpen("wc-ajax");
+			xml.appendAttribute("mode", "eager");
+			xml.appendClose();
+			xml.append(tab.getId());
+			xml.append("-content");
+			xml.appendEndTag("wc-ajax");
+		}
 
 		// Paint label
 		tab.getTabLabel().paint(renderContext);
