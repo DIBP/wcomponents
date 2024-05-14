@@ -192,6 +192,7 @@ describe("wc/ajax/Trigger", () => {
 				try {
 					expect(instance.id).withContext("first argument to subscriber should be trigger").toBe(trigger.id);
 					expect(pending).withContext("when firing a Trigger pending must be true").toBeTrue();
+					Trigger.unsubscribe(subscriber, -1);
 					win();
 				} catch (ex) {
 					lose();
@@ -211,6 +212,7 @@ describe("wc/ajax/Trigger", () => {
 				try {
 					expect(instance.id).withContext("first argument to subscriber should be trigger").toBe(trigger.id);
 					expect(pending).withContext("when the last Trigger has fired pending must be false").toBeFalse();
+					Trigger.unsubscribe(subscriber);
 					win();
 				} catch (ex) {
 					lose();
@@ -236,6 +238,7 @@ describe("wc/ajax/Trigger", () => {
 					expect(callbackCalled).withContext("The callback should have been called by now").toBeTrue();
 					expect(instance.id).withContext("first argument to subscriber should be trigger").toBe(trigger.id);
 					expect(pending).withContext("when the last Trigger has fired pending must be false").toBeFalse();
+					Trigger.unsubscribe(subscriber, 1);
 					win();
 				} catch (ex) {
 					lose();

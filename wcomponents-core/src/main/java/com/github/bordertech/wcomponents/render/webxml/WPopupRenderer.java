@@ -15,6 +15,8 @@ import com.github.bordertech.wcomponents.util.Util;
  */
 final class WPopupRenderer extends AbstractWebXmlRenderer {
 
+	public static final String TAG_NAME = "wc-popup";
+
 	/**
 	 * Paints the given WPopup.
 	 *
@@ -29,14 +31,14 @@ final class WPopupRenderer extends AbstractWebXmlRenderer {
 		int height = popup.getHeight();
 		String targetWindow = popup.getTargetWindow();
 
-		xml.appendTagOpen("ui:popup");
+		xml.appendTagOpen(TAG_NAME);
 		xml.appendUrlAttribute("url", popup.getUrl());
 		xml.appendOptionalAttribute("width", width > 0, width);
 		xml.appendOptionalAttribute("height", height > 0, height);
 		xml.appendOptionalAttribute("resizable", popup.isResizable(), "true");
-		xml.appendOptionalAttribute("showScrollbars", popup.isScrollable(), "true");
-		xml.appendOptionalAttribute("targetWindow", !Util.empty(targetWindow), targetWindow);
+		xml.appendOptionalAttribute("scrollbars", popup.isScrollable(), "true");
+		xml.appendOptionalAttribute("target", !Util.empty(targetWindow), targetWindow);
 		xml.appendClose();
-		xml.appendEndTag("ui:popup");
+		xml.appendEndTag(TAG_NAME);
 	}
 }

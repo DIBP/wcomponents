@@ -457,7 +457,7 @@ public class WWindow extends AbstractWComponent implements Container {
 		if (renderContext instanceof WebXmlRenderContext) {
 			PrintWriter writer = ((WebXmlRenderContext) renderContext).getWriter();
 
-			writer.print("\n<ui:popup");
+			writer.print("\n<wc-popup");
 			writer.print(" url=\"" + WebUtilities.encode(getUrl()) + '"');
 			writer.print(" width=\"" + getWidth() + '"');
 			writer.print(" height=\"" + getHeight() + '"');
@@ -467,23 +467,23 @@ public class WWindow extends AbstractWComponent implements Container {
 			}
 
 			if (isScrollable()) {
-				writer.print(" showScrollbars=\"true\"");
+				writer.print(" scrollbars=\"true\"");
 			}
 
 			if (isShowMenuBar()) {
-				writer.print(" showMenubar=\"true\"");
+				writer.print(" menubar=\"true\"");
 			}
 
 			if (isShowToolbar()) {
-				writer.print(" showToolbar=\"true\"");
+				writer.print(" toolbar=\"true\"");
 			}
 
 			if (isShowLocation()) {
-				writer.print(" showLocation=\"true\"");
+				writer.print(" location=\"true\"");
 			}
 
 			if (isShowStatus()) {
-				writer.print(" showStatus=\"true\"");
+				writer.print(" status=\"true\"");
 			}
 
 			if (getTop() >= 0) {
@@ -494,7 +494,7 @@ public class WWindow extends AbstractWComponent implements Container {
 				writer.print(" left=\"" + getLeft() + '\'');
 			}
 
-			writer.println("/>");
+			writer.println("></wc-popup>");
 		}
 	}
 

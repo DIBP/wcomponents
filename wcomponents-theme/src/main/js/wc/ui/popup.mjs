@@ -16,6 +16,7 @@ import uid from "wc/dom/uid.mjs";
 import timers from "wc/timers.mjs";
 
 const processQueueDelay = 1000,
+	TAG_NAME = "wc-popup",
 	URL_INDEX = 0,
 	NAME_INDEX = 1,
 	SPECS_INDEX = 2,
@@ -44,7 +45,7 @@ const instance = {
 	 *    basically an array of arrays and should be looked into.
 	 */
 	register: function (popupArray) {
-		if (popupArray && popupArray.length) {
+		if (popupArray?.length) {
 			initialise.addCallback(() => timers.setTimeout(processQueue, processQueueDelay, popupArray));
 		}
 		/**
@@ -83,13 +84,8 @@ function _open(infoArr) {
 			name = uid();
 		}
 	}
-	const specs = infoArr[SPECS_INDEX];
-	// NOTE: new issue found in IE8 after an update in March 2014!! window.open(url, name, null) no longer has the same effect as window.open(url, name);
-	if (specs) {
-		window.open(infoArr[URL_INDEX], name, specs);
-	} else {
-		window.open(infoArr[URL_INDEX], name);
-	}
+	const specs = infoArr[SPECS_INDEX] || "";
+	window.open(infoArr[URL_INDEX], name, specs);
 }
 
 /**
@@ -122,6 +118,51 @@ function clickEvent($event) {
 		popupNow(element);
 		$event.preventDefault();
 	}
+}
+
+/**
+ * Converts a WPopup element to a DTO for registration.
+ * @param {WPopup} element
+ */
+function toDto(element) {
+	const result = [element.getAttribute("url")];
+	result.push(element.getAttribute("target") || uid());
+
+	let windowFeatures = ["top", "left", "width", "height"].reduce((accumulator, next) => {
+		const value = element.getAttribute(next);
+		if (value) {
+			const feature = `${next}=${value}px`;
+			return accumulator ? `${accumulator},${feature}` : feature;
+
+		}
+		return accumulator;
+	}, "");
+	const featureAttrs = ["menubar", "toolbar", "location", "status"];
+	if (windowFeatures || featureAttrs.some(feature => element.hasAttribute(feature))) {
+		let initialValue = "resizable=yes,scrollbars=yes";
+		if (windowFeatures) {
+			initialValue = `${windowFeatures},${initialValue}`;
+		}
+		// Yes we are deliberately ignoring what `resizable` and `scrollbars` are set to because we know better, just ask us.
+		windowFeatures = featureAttrs.reduce((accumulator, next) => {
+			const value = element.hasAttribute(next) ? "yes" : "no";
+			return `${accumulator},${next}=${value}`;
+		}, initialValue);
+	}
+
+	result.push(windowFeatures);
+	return result;
+}
+
+class WPopup extends HTMLElement {
+	connectedCallback() {
+		const dto = toDto(this);
+		instance.register([dto]);
+	}
+}
+
+if (!customElements.get(TAG_NAME)) {
+	customElements.define(TAG_NAME, WPopup);
 }
 
 initialise.register({

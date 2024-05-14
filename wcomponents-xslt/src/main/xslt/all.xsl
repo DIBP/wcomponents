@@ -329,15 +329,11 @@
 
 	<!-- Common bootstrapping scripts -->
 	<xsl:template name="registrationScripts">
-		<xsl:variable name="dataListCombos"
-			select=".//ui:dropdown[@data and @type and not(@readOnly)] | .//ui:suggestions[@data]" />
+		<xsl:variable name="dataListCombos" select=".//ui:dropdown[@data and @type and not(@readOnly)] | .//ui:suggestions[@data]" />
 		<xsl:variable name="dataListComponents"
 			select=".//ui:dropdown[@data and not(@type) and not(@readOnly)] | .//ui:listbox[@data and not(@readOnly)] | .//ui:shuffler[@data and not(@readOnly)]" />
-		<xsl:variable name="filedrops"
-			select=".//ui:multifileupload[@ajax or @dropzone]" />
-		<xsl:variable name="multiDDData"
-			select=".//ui:multidropdown[@data and not(@readOnly)]" />
-		<xsl:variable name="popups" select=".//ui:popup" />
+		<xsl:variable name="filedrops" select=".//ui:multifileupload[@ajax or @dropzone]" />
+		<xsl:variable name="multiDDData" select=".//ui:multidropdown[@data and not(@readOnly)]" />
 		<xsl:variable name="rtfs" select=".//ui:textarea[ui:rtf]" />
 		<xsl:variable name="eagerness" select="//*[@mode eq 'eager']" />
 		<xsl:variable name="editors" select=".//html:wc-imageedit" />
@@ -390,11 +386,6 @@
 				<xsl:text>import("wc/ui/multiFormComponent.mjs").then(({ default: c }) => {c.register([</xsl:text>
 				<xsl:apply-templates select="$multiDDData" mode="registerIds" />
 				<xsl:text>]);});</xsl:text>
-			</xsl:if>
-			<xsl:if test="$popups">
-				<xsl:text>import("wc/ui/popup.mjs").then(({ default: c }) => {c.register([</xsl:text>
-				<xsl:apply-templates select="$popups" mode="JS" />
-				<xsl:text>])});</xsl:text>
 			</xsl:if>
 			<xsl:if test="$rtfs">
 				<xsl:text>import("wc/ui/rtf.mjs").then(({ default: c }) => {c.register([</xsl:text>

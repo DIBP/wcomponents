@@ -48,7 +48,7 @@ public class WContentRenderer_Test extends AbstractWebXmlRendererTestCase {
 		assertSchemaMatch(wContent);
 		// Display again (as reset after paint)
 		wContent.display();
-		assertXpathUrlEvaluatesTo(wContent.getUrl(), "//ui:popup/@url", wContent);
+		assertXpathUrlEvaluatesTo(wContent.getUrl(), String.format("//html:%s/@url", WPopupRenderer.TAG_NAME), wContent);
 		// Display again (as reset after paint)
 		wContent.display();
 		assertXpathNotExists(String.format("//html:%s", WContentRenderer.TAG_REDIRECT), wContent);
@@ -65,7 +65,7 @@ public class WContentRenderer_Test extends AbstractWebXmlRendererTestCase {
 
 		// Display again (as reset after paint)
 		wContent.display();
-		assertXpathNotExists("//ui:popup", wContent);
+		assertXpathNotExists(String.format("//html:%s", WPopupRenderer.TAG_NAME), wContent);
 
 		// Display again (as reset after paint)
 		wContent.display();

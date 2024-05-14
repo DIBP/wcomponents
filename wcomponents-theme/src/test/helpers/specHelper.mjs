@@ -19,6 +19,7 @@ function mockAjax() {
 		jasmine.Ajax.stubRequest(/.*\/note.xml.*/).andReturn(getResponse("note.xml", {}));
 		jasmine.Ajax.stubRequest(/.*\/note.txt.*/).andReturn(getResponse("note.txt", {}));
 		jasmine.Ajax.stubRequest(/.*\/icao.html.*/).andReturn(getResponse("icao.html", {}));
+		jasmine.Ajax.stubRequest(/.*\/uiTablePage1.html.*/).andReturn(getResponse("uiTablePage1.html", {}));
 
 		jasmine.Ajax.stubRequest(translationRe).andReturn({
 			status: 200,
