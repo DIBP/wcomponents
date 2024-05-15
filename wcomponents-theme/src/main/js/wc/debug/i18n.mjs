@@ -3,9 +3,9 @@ import arrayDiff from "wc/array/diff.mjs";
 import debounce from "wc/debounce.mjs";
 
 const checked = {};
-const queueCheck = debounce(languages => {
+const onload = debounce(languages => {
 	try {
-		const langs = languages || i18next.languages;
+		const langs = languages ? Object.keys(languages) : i18next.languages;
 		if (langs) {
 			for (let i = 0; i < langs.length; i++) {
 				let nextLang = langs[i];
@@ -18,10 +18,12 @@ const queueCheck = debounce(languages => {
 	} catch (ex) {
 		console.warn(ex);  // don't die checking missing translations and other debug fluff
 	}
-}, 1337);  // this does not need to happen in a hurry
+}, 10000);  // this does not need to happen in a hurry
 
-i18next.on("loaded", () => queueCheck());
-queueCheck();
+i18next.on("loaded", onload);
+if (i18next.languages.length) {
+	onload();  // it seems to have already loaded something, so the onload event handler won't be triggered
+}
 
 /**
  * Check for missing translations in this language's resource bundle.
