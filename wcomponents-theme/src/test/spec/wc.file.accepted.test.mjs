@@ -91,7 +91,7 @@ describe("wc/file/accepted", function() {
 		expect(accepted(element, fileInfo)).toBeTrue();
 	});
 
-	it("does nto accept files given as parameter with mismatched types", function() {
+	it("does not accept files given as parameter with mismatched types", function() {
 		const element = getInput(testHolder, "file8"),
 			fileInfo = {files: [new File(["foo.gif"], "foo", {type: "image/gif"})]};
 		expect(accepted(element, fileInfo)).toBeFalse();

@@ -25,12 +25,14 @@ import getMimeType from "wc/file/getMimeType.mjs";
  * @alias module:wc/file/accepted
  * @requires module:wc/file/getMimeType
  * @param {HTMLInputElement} element A "file input" element.
- * @param fileInfo The array of files to check, inside an object under "files" property
+ * @param [fileInfo] The array of files to check, inside an object under "files" property
  */
 export default function accepted(element, fileInfo) {
 	let acceptedType = element.accept;
 
-	if (!acceptedType) return true;
+	if (!acceptedType) {
+		return true;
+	}
 
 	let acceptedTypes = acceptedType.split(",");
 
@@ -38,7 +40,7 @@ export default function accepted(element, fileInfo) {
 		return (!mimeType && !extension) ||
 			(extension && acceptedType.indexOf(extension) >= 0) ||
 			(mimeType && acceptedType.indexOf(mimeType) >= 0);
-	}
+	};
 
 	const compareMime = function (actual, reference) {
 		if (actual === reference) {
@@ -54,11 +56,10 @@ export default function accepted(element, fileInfo) {
 
 	const checkFileArray = function (/** @type {module:wc/file/getMimeType~fileType} */fileType) {
 		let mimeType = fileType.mime || "",
-			extension = fileType.ext ? (`.${fileType.ext}`) : "",
-			passed = checkFileBasic(mimeType, extension);
+			extension = fileType.ext ? (`.${fileType.ext}`) : "";
 
-		if (passed) {
-			return true; // return straight away after passing first check
+		if (checkFileBasic(mimeType, extension)) {
+			return true;
 		}
 
 		// maybe there is a case difference OR it's a wildcard mimetype or there is some whitespace to be trimmed?
@@ -68,21 +69,21 @@ export default function accepted(element, fileInfo) {
 			if (extension) {
 				extension = extension.toLowerCase();
 				if (extension === next) {
-					passed = true;
-					break;
+					return true;
 				}
 			}
 			if (mimeType) {
 				mimeType = mimeType.toLowerCase();
-				passed = compareMime(mimeType, next);
-				if (passed) {
-					break;
+				if (compareMime(mimeType, next)) {
+					return true;
 				}
 			}
 		}
-		return passed;
+		return false;
 	};
 
-	if (fileInfo) return getMimeType(fileInfo).every(checkFileArray);
+	if (fileInfo) {
+		return getMimeType(fileInfo).every(checkFileArray);
+	}
 	return getMimeType(element).every(checkFileArray);
 }
