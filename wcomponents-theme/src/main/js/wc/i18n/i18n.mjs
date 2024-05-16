@@ -17,7 +17,7 @@ const noop = function(key, ...args) {
 	},
 	GOOG_RE = /^(.+)-x-mtfrom-(.+)$/;
 
-let initing;
+let initingPromise;
 
 /**
  * Manages the loading of i18n "messages" from the relevant i18n "resource bundle".
@@ -106,14 +106,18 @@ const instance = {
 	 */
 	initialize: function(config) {
 		const conf = config || wcconfig.get("wc/i18n/i18n") || {};
-		initing = initI18next(i18next, conf).then(translate => {
+		if (initingPromise) {
+			return initingPromise;
+		}
+		const done = () => initingPromise = null;
+		initingPromise = initI18next(i18next, conf).then(translate => {
 			if (translate) {
 				this.get = translatorFactory(translate);
-				initing = null;
 				return translate;
 			}
 		});
-		return initing;
+		initingPromise.catch(done);
+		return initingPromise.then(done);
 	}
 };
 
