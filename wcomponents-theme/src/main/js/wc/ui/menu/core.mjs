@@ -1128,7 +1128,7 @@ AbstractMenu.prototype._setupKeymap = function() {};
  * @function
  * @abstract
  */
-AbstractMenu.prototype._remapKeys = function(item) {};
+AbstractMenu.prototype._remapKeys = function(item) {};  // eslint-disable-line no-unused-vars
 
 /**
  * Get the menu root element for the menu in which the passed in element is enclosed. This is fundamental to the
@@ -1556,8 +1556,8 @@ AbstractMenu.prototype.focusEvent = function($event) {  // ignore the claim this
 	if (root && (root === genericRoot)) {
 		if (!root[BOOTSTRAPPED]) {
 			root[BOOTSTRAPPED] = true;
-			event.add(root, "keydown", (event) => {
-				eventWrapper.call(this, event);
+			event.add(root, "keydown", (evt) => {
+				eventWrapper.call(this, evt);
 			});
 		}
 		if (openMenu && (localOpenMenu = document.getElementById(openMenu)) && localOpenMenu !== root) {
@@ -1692,14 +1692,14 @@ AbstractMenu.prototype._setUpWidgets = function() {
  * @function
  * @public
  */
-AbstractMenu.prototype.initialise = function(element) {
+AbstractMenu.prototype.initialise = function(element) {  // eslint-disable-line no-unused-vars
 	return i18n.translate("letter").then(letterInternationalized => {
 		letterRe = new RegExp(/** @type {string} */(letterInternationalized));
 		this._setUpWidgets();
 		this._setupKeymap();
 
-		event.add(window, { type: "focus", listener: event => eventWrapper.call(this, event), capture: true });
-		event.add(window, "click", event => eventWrapper.call(this, event));
+		event.add(window, { type: "focus", listener: $event => eventWrapper.call(this, $event), capture: true });
+		event.add(window, "click", $event => eventWrapper.call(this, $event));
 
 		if (this.preAjaxSubscriber) {
 			processResponse.subscribe(this.preAjaxSubscriber.bind(this));

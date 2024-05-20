@@ -5,10 +5,10 @@
  *
  * node lintfile.js [somejs]
  *
- * If you do not provide an arg it will simply lint the theme.
+ * If you do not provide an arg it will simply run a lint on the theme.
  * If there is an error the exit code will not be 0.
  *
- * Or it can imported as a nodejs module via require.
+ * Or it can be imported as a module.
  *
  */
 import path from "path";
