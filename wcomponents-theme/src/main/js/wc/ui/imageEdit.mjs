@@ -9,6 +9,9 @@ import WCImageCapture from "wc/ui/ImageCapture.mjs";
 import ImageUndoRedo from "wc/ui/ImageUndoRedo.mjs";
 import fileSize from "wc/file/size.mjs";
 import fileUtil from "wc/file/util.mjs";
+import getViewportSize from "wc/dom/getViewportSize.mjs";
+import Cropper from '../../lib/cropperjs/dist/cropper.esm.js';
+
 
 let fabric, timer, wcImageCapture;
 let inited,
@@ -51,8 +54,10 @@ const imageEdit = {
 
 	defaults: {
 		maxsize: 20971520,  // limit the size, in bytes, of an image that can be loaded in the image editor (so the page does not hang)
-		width: 320,
-		height: 240,
+		displayWidth: 320,
+		displayHeight: 240,
+		width: 1920,
+		height: 1080,
 		format: "png",  // png or jpeg
 		quality: 1,  // only if format is jpeg
 		multiplier: 1,
@@ -71,7 +76,6 @@ const imageEdit = {
 		msgidftlfix: "imgedit_message_fixtoolarge",  // i18n message ID for "fix file too large"
 		autoresize: true  // if true then loading an image that exceeds size validaiton constraints will automatically trigger a resize attempt
 	},
-
 	getCanvas: () => fbCanvas,
 
 	/**
@@ -222,13 +226,40 @@ const imageEdit = {
 		try {
 			// @ts-ignore
 			if (img.nodeType  === Node.ELEMENT_NODE && img.matches("img")) {
-				renderFabricImage(new fabric.Image(img));
+				renderCropper(img);
+				// renderFabricImage(new fabric.Image(img));
 			} else {
 				fabric.Image.fromURL(img, renderFabricImage);
 			}
 		} catch (ex) {
 			console.warn(ex);
 		}
+
+		function renderCropper(element) {
+			const cropper = new Cropper(element, {
+				viewMode: 2,
+				aspectRatio: 2 / 3,
+				movable: false,
+				zoomable: false,
+				minContainerHeight: height,
+				minContainerWidth: width,
+				minCanvasHeight: height,
+				minCanvasWidth: width,
+				preview: ".crop_preview",
+				autoCrop: true,
+				crop: function(e) {
+					console.log(e.detail.x);
+					console.log(e.detail.y);
+					console.log(e.detail.width);
+					console.log(e.detail.height);
+					console.log(e.detail.rotate);
+					console.log(e.detail.scaleX);
+					console.log(e.detail.scaleY);
+				}
+		});
+			console.log(cropper);
+		}
+
 		function renderFabricImage(fabricImage) {
 			fabricImage.set({
 				angle: 0,
@@ -325,7 +356,6 @@ function getImageCapture() {
 	return wcImageCapture;
 }
 
-
 /**
  * Listens for edit requests on static images.
  * @param {MouseEvent & { target: HTMLElement }} $event A click event.
@@ -378,14 +408,8 @@ function editFile(config, file, win, lose) {
 			} else if (file) {
 				const fileReader = new FileReader();
 				fileReader.onload = function ($event) {
-					// @ts-ignore
-					imageEdit.renderImage($event.target.result, function() {
-						validateImage(file, editor).then(function(message) {
-							if (message) {
-								prompt.alert(message);
-							}
-						});
-					});
+					const cropperImage = document.querySelector("cropper-image");
+					cropperImage.setAttribute("src", $event.target.result);
 				};
 				fileReader.readAsDataURL(file);
 			} else {
@@ -498,12 +522,15 @@ function showHideOverlay(fabricCanvas, show) {
 
 function getDialogFrameConfig(onclose) {
 	return i18n.translate("imgedit_title").then(title => {
+		const vpsize = getViewportSize();
 		return {
 			onclose: onclose,
 			id: "wc_img_editor",
-			modal: true,
-			resizable: true,
-			title: title
+			modal: false,
+			resizeable: false,
+			title: title,
+			width: vpsize.width,
+			height: vpsize.height
 		};
 	});
 }
@@ -548,8 +575,8 @@ function getEditor(config, callbacks, file) {
 		const container = document.body.appendChild(document.createElement("div")),
 			editorProps = {
 				style: {
-					width: config.width,
-					height: config.height,
+					width: config.displayWidth,
+					height: config.displayWidth,
 					textclass: "wc-off",
 					btnclass: "wc_btn_icon"
 				},
@@ -564,32 +591,31 @@ function getEditor(config, callbacks, file) {
 					save: config.save
 				}
 			},
-			done = function(cntnr) {
-				const actions = attachEventHandlers(cntnr);
-				zoomControls(actions.events);
-				moveControls(actions.events);
-				resetControl(actions.events);
-				cancelControl(actions.events, cntnr, callbacks);
-				saveControl(actions.events, cntnr, callbacks, file);
-				rotationControls(actions.events);
-				if (config.redactor) {
-					config.redactor.controls(actions.events, cntnr);
-				}
+			done = function(dialogContent) {
+				// zoomControls(actions.events);
+				// moveControls(actions.events);
+				// resetControl(actions.events);
+				// cancelControl(actions.events, cntnr, callbacks);
+				// saveControl(actions.events, cntnr, callbacks, file);
+				// rotationControls(actions.events);
+				// if (config.redactor) {
+				// 	config.redactor.controls(actions.events, cntnr);
+				// }
 
-				if (!file) {
-					cntnr.classList.add("wc_camenable");
-					cntnr.classList.add("wc_showcam");
-					getImageCapture().snapshotControl(actions.events, cntnr);
-				}
-
-				if (contentContainer && cntnr) {
-					contentContainer.innerHTML = "";
-					contentContainer.appendChild(cntnr);
+				// if (!file) {
+				// 	cntnr.classList.add("wc_camenable");
+				// 	cntnr.classList.add("wc_showcam");
+				// 	getImageCapture().snapshotControl(actions.events, cntnr);
+				// }
+				if (contentContainer && dialogContent) {
+					const actions = attachEventHandlers(contentContainer);
+					saveControl(actions.events, contentContainer, callbacks, file);
+					contentContainer.innerHTML = dialogContent;
 					if (callbacks.rendered) {
 						callbacks.rendered(contentContainer);
 					}
 				}
-				return cntnr;
+				return contentContainer;
 			};
 		return getTranslations(editorProps).then(() => {
 			container.className = "wc_img_editor";
@@ -597,8 +623,8 @@ function getEditor(config, callbacks, file) {
 			return new Promise((win, lose) => {
 				timers.setTimeout(() => {
 					try {
-						container.innerHTML = getDialogContent(editorProps);
-						done(container);
+						const dialogContent = getDialogContent(editorProps);
+						done(dialogContent);
 						win(container);
 					} catch (ex) {
 						lose(ex);
@@ -613,24 +639,35 @@ function getEditor(config, callbacks, file) {
 function getDialogContent(context) {
 	const featureFilter = name => context.feature[name];
 	return `
-		<div class="wc-row">
-			<div class="wc_img_editpane wc-column">
-				<div class="wc_img_canvas">
-					<canvas id="wc_img_canvas"></canvas>
-				</div>
-			</div>
-			<div class="wc_img_cap wc-column" style="height: ${context.style.height}px">
-				<div id="wc_img_video_container"></div>
-				<button title="${context.imgedit_message_snap}" type="button" class="wc_btn_snap ${context.style.btnclass}" name="snap"><i aria-hidden="true" class="fa fa-camera"></i><span class="${context.style.textclass}">${context.imgedit_action_snap}</span></button>
-			</div>
-			<div class="wc_img_nocap wc-column">
-				<p>${context.imgedit_message_nocapture}</p>
-			</div>
-			<div class="wc_img_controls wc-column">
-				${controlsTemplate(context, ["rotate", "zoom", "move", "redact", "reset"].filter(featureFilter))}
-				<div>
-					${controlsTemplate(context, ["undo", "cancel", "save"].filter(featureFilter))}
-				</div>
+		<cropper-canvas background style="width: 100%; height:100%">
+			<cropper-image alt="Picture"></cropper-image>
+			<cropper-shade hidden></cropper-shade>
+			<cropper-handle action="select" plain></cropper-handle>
+				<cropper-selection initial-coverage="0.5" movable resizable zoomable>
+			<cropper-grid role="grid" covered></cropper-grid>
+			<cropper-crosshair centered></cropper-crosshair>
+			<cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+			<cropper-handle action="n-resize"></cropper-handle>
+			<cropper-handle action="e-resize"></cropper-handle>
+			<cropper-handle action="s-resize"></cropper-handle>
+			<cropper-handle action="w-resize"></cropper-handle>
+			<cropper-handle action="ne-resize"></cropper-handle>
+			<cropper-handle action="nw-resize"></cropper-handle>
+			<cropper-handle action="se-resize"></cropper-handle>
+			<cropper-handle action="sw-resize"></cropper-handle>
+			</cropper-selection>
+		</cropper-canvas>
+		<div class="wc_img_cap wc-column" style="height: ${context.style.height}px">
+			<div id="wc_img_video_container"></div>
+			<button title="${context.imgedit_message_snap}" type="button" class="wc_btn_snap ${context.style.btnclass}" name="snap"><i aria-hidden="true" class="fa fa-camera"></i><span class="${context.style.textclass}">${context.imgedit_action_snap}</span></button>
+		</div>
+		<div class="wc_img_nocap wc-column">
+			<p>${context.imgedit_message_nocapture}</p>
+		</div>
+		<div class="wc_img_controls wc-column">
+			${controlsTemplate(context, ["rotate", "zoom", "move", "redact", "reset"].filter(featureFilter))}
+			<div>
+				${controlsTemplate(context, ["undo", "cancel", "save"].filter(featureFilter))}
 			</div>
 		</div>`;
 }
