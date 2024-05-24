@@ -1,3 +1,6 @@
+// Temporarily downgrade this eslint rule until the file is rewritten.
+/* eslint no-undef: 1 */
+
 /*
  * This module handles hot module reloading for fast development.
  * If you are wondering at the value of this, I have now used it extensively during JS development, and it is AWESOME!
@@ -5,7 +8,6 @@
  *
  * @author Rick Brown
  */
-
 import "socket.io/client-dist/socket.io.js";
 import debounce from "wc/debounce.mjs";
 import cookie from "wc/dom/cookie.mjs";

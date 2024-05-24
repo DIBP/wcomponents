@@ -17,7 +17,6 @@ import buildCss from "../build-css.mjs";
 import buildImages from "../build-images.mjs";
 import buildJs from "../build-js.mjs";
 import buildResources from "../build-resource.mjs";
-// import grunt from "grunt";
 import path from "path";
 import hotReload from "./hotReloadServer.mjs";
 import debounce from "../src/main/js/wc/debounce.mjs";
@@ -36,7 +35,7 @@ const handlers = {
 				return paths.absolute;
 			});
 		},
-	resource: function(dir, filename) {
+	resource: function() {
 		return buildResources.build();
 	},
 	script: /**
@@ -68,7 +67,7 @@ const handlers = {
 		 * @returns {Promise} resolved when the change has been handled.
 		 */
 		function(dir, filename) {
-			return new Promise(function(win) {
+			return new Promise(function() {
 				const paths = getPaths(dir, filename);
 				themeLinter.run(paths.absolute);
 				// grunt.option("filename", paths.relative);

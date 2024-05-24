@@ -5,10 +5,10 @@
  *
  * node lintfile.js [somejs]
  *
- * If you do not provide an arg it will simply lint the theme.
+ * If you do not provide an arg it will simply run a lint on the theme.
  * If there is an error the exit code will not be 0.
  *
- * Or it can imported as a nodejs module via require.
+ * Or it can be imported as a module.
  *
  */
 import path from "path";
@@ -66,15 +66,15 @@ async function runEslint(target) {
 	const uglyReport =  await eslintCli.lintFiles(lintTarget);
 	const formatter = await eslintCli.loadFormatter();
 	const prettyReport = formatter.format(uglyReport);
-	const message = "THEME LINTER: No fatal lint errors.";
 	if (prettyReport) {
 		console.log(prettyReport);
-		let fatalErrorResults = ESLint.getErrorResults(uglyReport).filter((result) => {
-			return result.fatalErrorCount > 0;
+		let errorResults = ESLint.getErrorResults(uglyReport).filter((result) => {
+			return result.fatalErrorCount > 0 || result.errorCount > 0;
 		});
-		if (!fatalErrorResults.length) {
-			console.log(message);
+		if (errorResults.length) {
+			throw new Error("THEME LINTER: There are lint errors, fix them.");
 		}
+		console.log("THEME LINTER: No fatal lint errors.");
 	}
 	return uglyReport;
 }

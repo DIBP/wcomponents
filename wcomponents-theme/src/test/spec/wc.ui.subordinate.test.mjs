@@ -245,9 +245,7 @@ describe("wc/ui/subordinate Live DOM Rule Tests", () => {
 
 	it("should showInGroup and hideInGroup with and/or and date fields and essentially just general complexity", () => {
 		const shouldChange = true;
-		return findByTestId(testHolder, "greyElephant").then(greyElephant => {
-			const whiteElephant = getByTestId(testHolder, "whiteElephant");
-			const brownElephant = getByTestId(testHolder, "brownElephant");
+		return findByTestId(testHolder, "greyElephant").then(() => {
 			visibilityChecker({
 				// All start hidden
 				whiteElephant: true,
@@ -336,7 +334,7 @@ describe("wc/ui/subordinate Live DOM Rule Tests", () => {
 	 * This is a test with two onTrue actions and rather complex condition logic.
 	 */
 	function subordinate4TestHelperColorPickerChange(shouldChange, selectVal, triggerId = "rgYesNoYes", forceGrey = false) {
-		return findByTestId(testHolder, "whiteElephant").then(whiteElephant => {
+		return findByTestId(testHolder, "whiteElephant").then(() => {
 			const forceGreyCheckbox = getInput(testHolder, "forceGrey");
 			const greyElephant = getByTestId(testHolder, "greyElephant");
 			const brownElephant = getByTestId(testHolder, "brownElephant");
@@ -347,8 +345,8 @@ describe("wc/ui/subordinate Live DOM Rule Tests", () => {
 				greyElephant: true,
 				brownElephant: true
 			});
-			greyElephant.removeAttribute("hidden");  /// now show this element
-			brownElephant.removeAttribute("hidden");  /// now show this element
+			greyElephant.removeAttribute("hidden");  // now show this element
+			brownElephant.removeAttribute("hidden");  // now show this element
 
 			const colorpicker = getSelect(testHolder, "colorpicker");
 			colorpicker.selectedIndex = Array.from(colorpicker.options).findIndex(next => next.value === selectVal);
@@ -395,7 +393,7 @@ describe("wc/ui/subordinate Live DOM Rule Tests", () => {
 						win();
 					}, delay);
 				}, delay);
-			})
+			});
 		});
 	}
 

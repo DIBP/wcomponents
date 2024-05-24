@@ -8,11 +8,11 @@ import fs from "fs-extra";
 import path from "path";
 // import esmBuilder from "./scripts/esmBuilder.js";
 import libBuilder from "./scripts/libs.mjs";
-import { paths, getConfig, buildMax, dirs } from "./scripts/build-util.mjs";
+import { paths, buildMax, dirs } from "./scripts/build-util.mjs";
 import UglifyJS from "uglify-js";
 import themeLinter from "./scripts/lintfile.mjs";
 import { fileURLToPath } from "url";
-const verbose = getConfig("verbose");
+// const verbose = getConfig("verbose");
 const __filename = fileURLToPath(import.meta.url);
 const entryFile = process.argv?.[1];
 
@@ -86,7 +86,7 @@ async function buildSingle(singleFile) {
 	conf.name = pathToModule(fileName.replace(/.mjs$/, '.js'));
 	conf.out = path.join(dirs.script.min, fileName);
 	if (singleFile.endsWith('.mjs')) {
-		const targetDir = path.dirname(path.join(dirs.script.max, conf.name));
+		// const targetDir = path.dirname(path.join(dirs.script.max, conf.name));
 		// await esmBuilder.build(singleFile, targetDir);
 		buildMax(dirs.script, fileName);
 	} else {
@@ -99,9 +99,9 @@ async function buildSingle(singleFile) {
  * Generate optimized and minified version of the scripts.
  * @param conf Configuration options for r.js.
  */
-function optimize(conf) {
-	noisyLog("r.js config", conf);
-}
+// function optimize(conf) {
+// 	noisyLog("r.js config", conf);
+// }
 
 /**
  * Clean the output of previous builds.
@@ -114,11 +114,11 @@ function clean() {
 /**
  * Particularly noisy logging can go through here as it is off by default.
  */
-function noisyLog() {
-	if (verbose) {
-		console.log.apply(console, arguments);
-	}
-}
+// function noisyLog() {
+// 	if (verbose) {
+// 		console.log.apply(console, arguments);
+// 	}
+// }
 
 /**
  * Determines a module name from a filesystem path.
