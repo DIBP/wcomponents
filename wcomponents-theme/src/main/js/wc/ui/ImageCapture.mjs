@@ -167,9 +167,8 @@ function WCImageCapture(imageEdit) {
 		gumWithFallback(currentOptions, playCb, errCb);
 	};
 
-	function videoToDataUrl(video, scale) {
-		const scaleFactor = scale || 1,
-			onCanvas = document.createElement("canvas");
+	function videoToDataUrl(video) {
+		const onCanvas = document.createElement("canvas");
 		onCanvas.width = video.videoWidth;
 		onCanvas.height = video.videoHeight;
 		onCanvas.getContext("2d").drawImage(video, 0, 0, onCanvas.width, onCanvas.height);
@@ -206,7 +205,7 @@ function WCImageCapture(imageEdit) {
 				currentOptions.width = offsetWidth;
 				currentOptions.height = offsetHeight;
 			}
-			//result.width = currentOptions.width;
+			// result.width = currentOptions.width;
 			// result.height = currentOptions.height;
 			result.setAttribute("style", `width:${currentOptions.width}px; height:${currentOptions.height}px;`);
 			result.autoplay = true;

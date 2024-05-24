@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: 1 */ // TODO REMOVE
 import mixin from "wc/mixin.mjs";
 import wcconfig from "wc/config.mjs";
 import event from "wc/dom/event.mjs";
@@ -11,6 +12,7 @@ import fileSize from "wc/file/size.mjs";
 import fileUtil from "wc/file/util.mjs";
 import getViewportSize from "wc/dom/getViewportSize.mjs";
 import Cropper from '../../lib/cropperjs/dist/cropper.esm.js';
+
 
 
 let fabric, timer, wcImageCapture;
@@ -51,6 +53,7 @@ const imageEdit = {
 			}
 		}, 50);
 	},
+
 
 	defaults: {
 		maxsize: 20971520,  // limit the size, in bytes, of an image that can be loaded in the image editor (so the page does not hang)
@@ -247,6 +250,9 @@ const imageEdit = {
 				minCanvasWidth: width,
 				preview: ".crop_preview",
 				autoCrop: true,
+				ready: function() {
+					console.log(arguments);
+				},
 				crop: function(e) {
 					console.log(e.detail.x);
 					console.log(e.detail.y);
@@ -256,8 +262,7 @@ const imageEdit = {
 					console.log(e.detail.scaleX);
 					console.log(e.detail.scaleY);
 				}
-		});
-			console.log(cropper);
+			});
 		}
 
 		function renderFabricImage(fabricImage) {
@@ -1128,6 +1133,13 @@ function saveControl(eventConfig, editor, callbacks, file) {
 	 * Respond to the user's intent to save.
 	 */
 	click.save = {
+		func: function () {
+			const selection = document.querySelector("cropper-selection");
+			selection.$toCanvas().then(cropped => {
+				document.body.appendChild(cropped);
+			});
+		}
+		/**
 		func: function() {
 			callbacks.formatForSave = getCanvasAsFile;
 			callbacks.validate = function() {
@@ -1151,6 +1163,7 @@ function saveControl(eventConfig, editor, callbacks, file) {
 			};
 			checkThenSave(callbacks);
 		}
+			*/
 	};
 	return click.save;
 }
