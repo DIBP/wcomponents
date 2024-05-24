@@ -57,7 +57,7 @@ const instance = {
 		const actionBuilder = dto => {
 			dto.defaultView = defaultView || window;
 			return new Action(dto);
-		}
+		};
 
 		if (rules) {
 			for (const rule of rules) {
