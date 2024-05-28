@@ -65,8 +65,8 @@ final class WPanelRenderer extends AbstractWebXmlRenderer {
 
 			if (PanelMode.EAGER.equals(panel.getMode())) {
 				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendAttribute("container-id", panel.getId());
 				xml.appendClose();
-				xml.append(panel.getId());
 				xml.appendEndTag("wc-ajax-eager");
 			}
 		}

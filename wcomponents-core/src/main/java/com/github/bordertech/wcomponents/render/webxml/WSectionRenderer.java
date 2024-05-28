@@ -67,8 +67,8 @@ final class WSectionRenderer extends AbstractWebXmlRenderer {
 			// Add eager marker element if content rendering is to be done later
 			if (mode != null && mode.equals(SectionMode.EAGER)) {
 				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendAttribute("container-id", section.getId());
 				xml.appendClose();
-				xml.append(component.getId());
 				xml.appendEndTag("wc-ajax-eager");
 			}
 		}

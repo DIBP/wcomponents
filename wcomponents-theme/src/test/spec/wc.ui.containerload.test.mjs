@@ -1,5 +1,4 @@
 import Trigger from "wc/ajax/Trigger.mjs";
-import containerload from "wc/ui/containerload.mjs";
 
 describe("wc/dom/containerload", () => {
 

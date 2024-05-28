@@ -69,8 +69,8 @@ final class WFigureRenderer extends AbstractWebXmlRenderer {
 			// Add eager marker element if content rendering is to be done later
 			if (mode != null && mode.equals(FigureMode.EAGER)) {
 				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendAttribute("container-id", figure.getId());
 				xml.appendClose();
-				xml.append(figure.getId());
 				xml.appendEndTag("wc-ajax-eager");
 			}
 		}

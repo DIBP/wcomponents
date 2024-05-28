@@ -76,9 +76,8 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 			// Add eager marker element if content rendering is to be done later
 			if (tab.getMode().equals(TabMode.EAGER)) {
 				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendAttribute("container-id", tab.getId() + "-content");
 				xml.appendClose();
-				xml.append(tab.getId());
-				xml.append("-content");
 				xml.appendEndTag("wc-ajax-eager");
 			}
 		}

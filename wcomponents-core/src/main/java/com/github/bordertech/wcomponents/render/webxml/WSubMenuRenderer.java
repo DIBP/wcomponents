@@ -123,9 +123,8 @@ final class WSubMenuRenderer extends AbstractWebXmlRenderer {
 		} else {
 			// Add eager marker element if content rendering is to be done later
 			xml.appendTagOpen("wc-ajax-eager");
+			xml.appendAttribute("container-id", menu.getId() + "-content");
 			xml.appendClose();
-			xml.append(menu.getId());
-			xml.append("-content");
 			xml.appendEndTag("wc-ajax-eager");
 		}
 

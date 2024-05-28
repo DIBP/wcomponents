@@ -225,12 +225,16 @@ function init() {
 function requestEagerLoad(id) {
 	const element = document.getElementById(id);
 
-	if (element?.getElementsByTagName(eagerMarkerTag).length === 0) {
-		if ((element?.innerHTML?.trim())) {
+	if (!element) {
+		return;
+	}
+
+	if (element.getElementsByTagName(eagerMarkerTag).length === 0) {
+		if ((element.innerHTML?.trim())) {
 			return;
 		}
 	} else {
-		for (const eagerMarker of element?.getElementsByTagName(eagerMarkerTag)) {
+		for (const eagerMarker of element.getElementsByTagName(eagerMarkerTag)) {
 			eagerMarker.remove();
 		}
 	}
@@ -255,7 +259,7 @@ const eagerMarkerTag = "wc-ajax-eager";  // (hopefully temporary) way of spottin
 class WEager extends HTMLElement {
 
 	connectedCallback() {
-		instance.register([this.innerHTML]);
+		instance.register([this.getAttribute("container-id")]);
 	}
 }
 

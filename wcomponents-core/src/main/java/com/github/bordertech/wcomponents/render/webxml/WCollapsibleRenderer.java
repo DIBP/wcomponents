@@ -79,9 +79,8 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 			content.paint(renderContext);
 		} else {
 			xml.appendTagOpen("wc-ajax-eager");
+			xml.appendAttribute("container-id", collapsible.getId() + "-content");
 			xml.appendClose();
-			xml.append(collapsible.getId());
-			xml.append("-content");
 			xml.appendEndTag("wc-ajax-eager");
 		}
 
