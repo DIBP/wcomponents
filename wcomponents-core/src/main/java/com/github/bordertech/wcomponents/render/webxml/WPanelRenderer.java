@@ -48,23 +48,11 @@ final class WPanelRenderer extends AbstractWebXmlRenderer {
 		xml.appendOptionalAttribute("buttonId", submitId);
 		xml.appendOptionalAttribute("title", titleText);
 		xml.appendOptionalAttribute("type", getPanelType(panel));
-//		xml.appendOptionalAttribute("mode", getPanelMode(panel));  // FIXME cleanup
-		if (PanelMode.LAZY.equals(panel.getMode())) {
-			xml.appendAttribute("mode", "lazy");
-		}
+		xml.appendOptionalAttribute("mode", getPanelMode(panel));
 
 		AccessKeyRendererUtil.appendOptionalAccessKeyXMLAttribute(panel, renderContext);
 
 		xml.appendClose();
-
-		if (PanelMode.EAGER.equals(panel.getMode())) {
-			xml.appendTagOpen("wc-ajax");
-			xml.appendAttribute("mode", "eager");
-			xml.appendClose();
-			xml.append(panel.getId());
-			xml.append("-content");
-			xml.appendEndTag("wc-ajax");
-		}
 
 		// Render margin
 		MarginRendererUtil.renderMargin(panel, renderContext);
@@ -74,6 +62,13 @@ final class WPanelRenderer extends AbstractWebXmlRenderer {
 		} else {
 			// Content will be loaded via AJAX
 			xml.append("<ui:content/>");
+
+			if (PanelMode.EAGER.equals(panel.getMode())) {
+				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendClose();
+				xml.append(panel.getId());
+				xml.appendEndTag("wc-ajax-eager");
+			}
 		}
 
 		xml.appendEndTag("ui:panel");

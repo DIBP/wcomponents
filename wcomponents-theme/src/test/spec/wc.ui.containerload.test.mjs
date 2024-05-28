@@ -23,7 +23,7 @@ describe("wc/dom/containerload", () => {
 		for (let i = 0; i < ids.length; i++) {
 			html += `
 				<div id="container${i}">
-					<wc-ajax mode="eager">${ids[i]}</wc-ajax>
+					<wc-ajax mode="eager">${ids[i]}</wc-ajax> // FIXME change to fit new code
 					<div id="${ids[i]}"></div>
 				</div>`;
 		}

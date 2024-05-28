@@ -42,7 +42,7 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 				xml.appendAttribute("mode", "lazy");
 				break;
 			case EAGER:
-//				xml.appendAttribute("mode", "eager");  // FIXME cleanup
+				xml.appendAttribute("mode", "eager");
 				break;
 			case DYNAMIC:
 				xml.appendAttribute("mode", "dynamic");
@@ -61,17 +61,6 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 
 		xml.appendClose();
 
-		CollapsibleMode mode = collapsible.getMode();
-		if (mode != null && mode.equals(CollapsibleMode.EAGER)) {
-			xml.appendTagOpen("wc-ajax");
-			xml.appendAttribute("mode", "eager");
-			xml.appendClose();
-			xml.append(collapsible.getId());
-			xml.append("-content");
-			xml.appendEndTag("wc-ajax");
-		}
-
-
 		// Render margin
 		MarginRendererUtil.renderMargin(collapsible, renderContext);
 
@@ -88,6 +77,12 @@ final class WCollapsibleRenderer extends AbstractWebXmlRenderer {
 				collapsible)) {
 			// Visibility of content set in prepare paint
 			content.paint(renderContext);
+		} else {
+			xml.appendTagOpen("wc-ajax-eager");
+			xml.appendClose();
+			xml.append(collapsible.getId());
+			xml.append("-content");
+			xml.appendEndTag("wc-ajax-eager");
 		}
 
 		xml.appendEndTag("ui:content");

@@ -41,7 +41,7 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 				xml.appendAttribute("mode", "lazy");
 				break;
 			case EAGER:
-//				xml.appendAttribute("mode", "eager");  // FIXME cleanup
+				xml.appendAttribute("mode", "eager");
 				break;
 			case DYNAMIC:
 				xml.appendAttribute("mode", "dynamic");
@@ -56,16 +56,6 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 		AccessKeyRendererUtil.appendOptionalAccessKeyXMLAttribute(tab, renderContext);
 
 		xml.appendClose();
-
-		TabMode mode = tab.getMode();
-		if (mode != null && mode.equals(TabMode.EAGER)) {
-			xml.appendTagOpen("wc-ajax");
-			xml.appendAttribute("mode", "eager");
-			xml.appendClose();
-			xml.append(tab.getId());
-			xml.append("-content");
-			xml.appendEndTag("wc-ajax");
-		}
 
 		// Paint label
 		tab.getTabLabel().paint(renderContext);
@@ -82,6 +72,15 @@ final class WTabRenderer extends AbstractWebXmlRenderer {
 				tab))) {
 			// Visibility of content set in prepare paint
 			content.paint(renderContext);
+		} else {
+			// Add eager marker element if content rendering is to be done later
+			if (tab.getMode().equals(TabMode.EAGER)) {
+				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendClose();
+				xml.append(tab.getId());
+				xml.append("-content");
+				xml.appendEndTag("wc-ajax-eager");
+			}
 		}
 
 		xml.appendEndTag("ui:tabcontent");

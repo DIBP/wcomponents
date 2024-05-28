@@ -46,7 +46,7 @@ final class WSectionRenderer extends AbstractWebXmlRenderer {
 					xml.appendAttribute("mode", "lazy");
 					break;
 				case EAGER:
-//					xml.appendAttribute("mode", "eager");  // FIXME cleanup
+					xml.appendAttribute("mode", "eager");
 					break;
 				default:
 					throw new SystemException("Unknown section mode: " + section.getMode());
@@ -54,14 +54,6 @@ final class WSectionRenderer extends AbstractWebXmlRenderer {
 		}
 
 		xml.appendClose();
-
-		if (mode != null && mode.equals(SectionMode.EAGER)) {
-			xml.appendTagOpen("wc-ajax");
-			xml.appendAttribute("mode", "eager");
-			xml.appendClose();
-			xml.append(component.getId());
-			xml.appendEndTag("wc-ajax");
-		}
 
 		// Render margin
 		MarginRendererUtil.renderMargin(section, renderContext);
@@ -71,6 +63,14 @@ final class WSectionRenderer extends AbstractWebXmlRenderer {
 			section.getDecoratedLabel().paint(renderContext);
 			// Content
 			section.getContent().paint(renderContext);
+		} else {
+			// Add eager marker element if content rendering is to be done later
+			if (mode != null && mode.equals(SectionMode.EAGER)) {
+				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendClose();
+				xml.append(component.getId());
+				xml.appendEndTag("wc-ajax-eager");
+			}
 		}
 
 		xml.appendEndTag("ui:section");

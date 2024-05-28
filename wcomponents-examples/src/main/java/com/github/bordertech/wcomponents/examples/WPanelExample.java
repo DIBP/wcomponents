@@ -30,6 +30,7 @@ public class WPanelExample extends WContainer {
 			add(new WHeading(HeadingLevel.H3, panelType.toString()));
 
 			WPanel panel = new WPanel(panelType);
+			panel.setMode(WPanel.PanelMode.EAGER);
 			panel.setTitleText("Panel title");
 
 			// This is bad - use a layout instead

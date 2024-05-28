@@ -93,7 +93,7 @@ final class WSubMenuRenderer extends AbstractWebXmlRenderer {
 				xml.appendAttribute("mode", "lazy");
 				break;
 			case EAGER:
-//				xml.appendAttribute("mode", "eager");   // FIXME cleanup
+				xml.appendAttribute("mode", "eager");
 				break;
 			case DYNAMIC:
 			case SERVER:
@@ -111,16 +111,6 @@ final class WSubMenuRenderer extends AbstractWebXmlRenderer {
 
 		MenuMode mode = menu.getMode();
 
-		if (mode != null && mode.equals(MenuMode.EAGER)) {
-			xml.appendTagOpen("wc-ajax");
-			xml.appendAttribute("mode", "eager");
-			xml.appendClose();
-			xml.append(menu.getId());
-			xml.append("-content");
-			xml.appendEndTag("wc-ajax");
-		}
-
-
 		// Paint submenu items
 		xml.appendTagOpen("ui:content");
 		xml.appendAttribute("id", component.getId() + "-content");
@@ -130,6 +120,13 @@ final class WSubMenuRenderer extends AbstractWebXmlRenderer {
 		if (mode != MenuMode.EAGER || AjaxHelper.isCurrentAjaxTrigger(menu)) {
 			// Visibility of content set in prepare paint
 			menu.paintMenuItems(renderContext);
+		} else {
+			// Add eager marker element if content rendering is to be done later
+			xml.appendTagOpen("wc-ajax-eager");
+			xml.appendClose();
+			xml.append(menu.getId());
+			xml.append("-content");
+			xml.appendEndTag("wc-ajax-eager");
 		}
 
 		xml.appendEndTag("ui:content");

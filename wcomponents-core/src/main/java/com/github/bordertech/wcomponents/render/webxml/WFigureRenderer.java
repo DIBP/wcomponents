@@ -43,7 +43,7 @@ final class WFigureRenderer extends AbstractWebXmlRenderer {
 					xml.appendAttribute("mode", "lazy");
 					break;
 				case EAGER:
-//					xml.appendAttribute("mode", "eager"); // FIXME cleanup
+					xml.appendAttribute("mode", "eager");
 					break;
 				default:
 					throw new SystemException("Unknown figure mode: " + figure.getMode());
@@ -51,16 +51,6 @@ final class WFigureRenderer extends AbstractWebXmlRenderer {
 		}
 
 		xml.appendClose();
-
-		if (mode != null && mode.equals(FigureMode.EAGER)) {
-			xml.appendTagOpen("wc-ajax");
-			xml.appendAttribute("mode", "eager");
-			xml.appendClose();
-			xml.append(figure.getId());
-			xml.append("-content");
-			xml.appendEndTag("wc-ajax");
-		}
-
 
 		// Render margin
 		MarginRendererUtil.renderMargin(figure, renderContext);
@@ -75,6 +65,14 @@ final class WFigureRenderer extends AbstractWebXmlRenderer {
 			xml.appendClose();
 			figure.getContent().paint(renderContext);
 			xml.appendEndTag("ui:content");
+		} else {
+			// Add eager marker element if content rendering is to be done later
+			if (mode != null && mode.equals(FigureMode.EAGER)) {
+				xml.appendTagOpen("wc-ajax-eager");
+				xml.appendClose();
+				xml.append(figure.getId());
+				xml.appendEndTag("wc-ajax-eager");
+			}
 		}
 
 		xml.appendEndTag("ui:figure");

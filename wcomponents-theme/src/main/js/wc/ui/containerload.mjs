@@ -224,10 +224,19 @@ function init() {
  */
 function requestEagerLoad(id) {
 	const element = document.getElementById(id);
-	if (!(element?.innerHTML?.trim())) {
-		console.log("Eager loading: ", id);
-		requestLoad(element, true, true);
+
+	if (element?.getElementsByTagName(eagerMarkerTag).length === 0) {
+		if ((element?.innerHTML?.trim())) {
+			return;
+		}
+	} else {
+		for (const eagerMarker of element?.getElementsByTagName(eagerMarkerTag)) {
+			eagerMarker.remove();
+		}
 	}
+
+	console.log("Eager loading: ", id);
+	requestLoad(element, true, true);
 }
 
 function processNow(idArr) {
@@ -242,19 +251,16 @@ function processNow(idArr) {
 //    load containers (collapsible, tab etc.)
 initialise.addCallback(init);
 
-const eagerTag = "wc-ajax";  // to be replaced, temporary way of spotting eager components
+const eagerMarkerTag = "wc-ajax-eager";  // (hopefully temporary) way of spotting eager components
 class WEager extends HTMLElement {
-	static observedAttributes = ["mode"];
 
-	attributeChangedCallback() {
-		if (this.getAttribute("mode") === "eager") {
-			instance.register([this.innerHTML]);
-		}
+	connectedCallback() {
+		instance.register([this.innerHTML]);
 	}
 }
 
-if (!customElements.get(eagerTag)) {
-	customElements.define(eagerTag, WEager);
+if (!customElements.get(eagerMarkerTag)) {
+	customElements.define(eagerMarkerTag, WEager);
 }
 
 export default instance;
