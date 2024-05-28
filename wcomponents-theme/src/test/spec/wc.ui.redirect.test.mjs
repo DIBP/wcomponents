@@ -5,12 +5,18 @@ describe("wc/ui/redirect", () => {
 
 	beforeEach(() => {
 		let storedUrl = "";
+
 		window.parent = {
+			// @ts-ignore
 			location: {
+				get href() {
+					return storedUrl;
+				},
 				set href(url) {
 					storedUrl = url;
 				},
 				replace: function (url) {
+					// @ts-ignore
 					this.href = url;
 				}
 			}
@@ -51,6 +57,7 @@ describe("wc/ui/redirect", () => {
 				expect(isLaunchUrl).toBeFalse();
 				resolve();
 			});
+			// @ts-ignore
 			spyOn(document, "getElementById").and.callFake(() => {
 				expect(isLaunchUrl).toBeTrue();
 				resolve();

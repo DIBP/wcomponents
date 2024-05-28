@@ -817,7 +817,7 @@ function eventToObserverAdapter(subscriber) {
 	/** @param {CustomEvent} $event */
 	return ($event) => {
 		subscriber($event.target, $event.detail.action);
-	}
+	};
 }
 
 export default instance;
