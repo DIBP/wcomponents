@@ -52,11 +52,14 @@ function getMonthNames(locale, short) {
 	const result = [];
 	const type = short ? "short" : "long";
 	for (let i = 0; i < 12; i++) {
-		result.push(referenceDate.toLocaleDateString(locale, { month: type }));
+		let name = referenceDate.toLocaleDateString(locale, { month: type });
+		name = name.replace(/\.$/, "");
+		result.push(name);
 		referenceDate.setMonth(referenceDate.getMonth() + 1);
 	}
 	return result;
 }
+
 
 /**
  * Get the month names.
