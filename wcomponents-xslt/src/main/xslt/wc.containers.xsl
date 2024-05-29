@@ -97,19 +97,23 @@
 					<xsl:text>hidden</xsl:text>
 				</xsl:attribute>
 			</xsl:if>
-<!--			<xsl:if test="*[not(self::ui:margin)]/node() or not(@mode eq 'eager')">-->
-			<xsl:if test="(@type eq 'chrome' or @type eq 'action')">
-				<h1>
-					<xsl:value-of select="normalize-space(@title)"/>
-				</h1>
+			<xsl:if test="*[not(self::ui:margin)]/node() or not(@mode eq 'eager')">
+				<xsl:if test="(@type eq 'chrome' or @type eq 'action')">
+					<h1>
+						<xsl:value-of select="normalize-space(@title)"/>
+					</h1>
+				</xsl:if>
+				<!--
+					We have split out preping the child elements into a helper template
+					so that implementations can easily override the way templates are
+					applied. Call this last.
+				-->
+				<xsl:apply-templates />
 			</xsl:if>
-			<!--
-				We have split out preping the child elements into a helper template
-				so that implementations can easily override the way templates are
-				applied. Call this last.
-			-->
-			<xsl:apply-templates />
-<!--			</xsl:if>-->
+			<!-- Render the html custom element that marks eager containers -->
+			<xsl:if test="@mode eq 'eager'">
+				<xsl:apply-templates select="html:wc-ajax-eager" />
+			</xsl:if>
 		</xsl:element>
 	</xsl:template>
 
