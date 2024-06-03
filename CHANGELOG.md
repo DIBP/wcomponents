@@ -1,6 +1,7 @@
 # Change log
 
 ## Release in-progress
+* Fix calendar not closing in webkit browsers when it loses focus to a non-focusable element.
 
 ### API Changes
 ### Enhancements
