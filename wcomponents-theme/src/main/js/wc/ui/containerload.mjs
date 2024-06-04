@@ -230,6 +230,7 @@ function requestEagerLoad(id) {
 	}
 
 	if (element.getElementsByTagName(eagerMarkerTag).length === 0) {
+		// no need to load if the content is already there
 		if ((element.innerHTML?.trim())) {
 			return;
 		}
