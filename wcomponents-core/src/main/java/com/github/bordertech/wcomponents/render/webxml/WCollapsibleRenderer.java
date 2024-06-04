@@ -1,6 +1,10 @@
 package com.github.bordertech.wcomponents.render.webxml;
 
-import com.github.bordertech.wcomponents.*;
+import com.github.bordertech.wcomponents.AjaxHelper;
+import com.github.bordertech.wcomponents.HeadingLevel;
+import com.github.bordertech.wcomponents.WCollapsible;
+import com.github.bordertech.wcomponents.WComponent;
+import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.WCollapsible.CollapsibleMode;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 import com.github.bordertech.wcomponents.util.SystemException;

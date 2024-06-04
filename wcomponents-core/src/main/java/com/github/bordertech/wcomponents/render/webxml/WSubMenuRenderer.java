@@ -1,6 +1,11 @@
 package com.github.bordertech.wcomponents.render.webxml;
 
-import com.github.bordertech.wcomponents.*;
+import com.github.bordertech.wcomponents.AjaxHelper;
+import com.github.bordertech.wcomponents.WComponent;
+import com.github.bordertech.wcomponents.WMenu;
+import com.github.bordertech.wcomponents.WSubMenu;
+import com.github.bordertech.wcomponents.WebUtilities;
+import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.WSubMenu.MenuMode;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 import com.github.bordertech.wcomponents.util.SystemException;

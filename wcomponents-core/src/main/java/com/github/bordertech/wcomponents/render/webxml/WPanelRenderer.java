@@ -10,8 +10,6 @@ import com.github.bordertech.wcomponents.XmlStringBuilder;
 import com.github.bordertech.wcomponents.layout.LayoutManager;
 import com.github.bordertech.wcomponents.servlet.WebXmlRenderContext;
 
-import java.util.Objects;
-
 /**
  * The {@link Renderer} for the {@link WPanel} component.
  *
