@@ -6,11 +6,15 @@
 ### Enhancements
 ### Bug Fixes
 
+## 1.5.34
+
+### Bug Fixes
+* Fix dayname and monthname reference dates to handle timezones
+
 ## 1.5.33
 
 ### Bug Fixes
 * Fix month names and day names being incorrect in some timezones at some times of the day.
-* Fix calendar not closing in webkit browsers when it loses focus to a non-focusable element.
 
 ## 1.5.32
 
