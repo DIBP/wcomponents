@@ -48,7 +48,7 @@ function initialise() {
  * @return {string[]}
  */
 function getMonthNames(locale, short) {
-	const referenceDate = new Date("01 January 2000 0:00 UTC");  // January
+	const referenceDate = new Date(2000, 0, 15);  // January
 	const result = [];
 	const type = short ? "short" : "long";
 	for (let i = 0; i < 12; i++) {
