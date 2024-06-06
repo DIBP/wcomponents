@@ -12,8 +12,8 @@ describe("wc/date/monthName", function() {
 	const expectedFrAscii = ["janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet",
 		"aout", "septembre", "octobre", "novembre", "decembre"];
 
-	const expectedFrAbbrAscii = ["janv.", "fevr.", "mars", "avr.", "mai", "juin", "juil.",
-		"aout", "sept.", "oct.", "nov.", "dec."];
+	const expectedFrAbbrAscii = ["janv", "fevr", "mars", "avr", "mai", "juin", "juil",
+		"aout", "sept", "oct", "nov", "dec"];
 
 	const lang = globalThis.document.documentElement.lang;
 
