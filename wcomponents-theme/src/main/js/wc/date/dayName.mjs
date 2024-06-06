@@ -15,7 +15,7 @@ const cache = {};
  * @return {string[]}
  */
 function getDayNames(locale) {
-	const referenceDate = new Date(Date.UTC(2000, 1, 6));  // Sunday
+	const referenceDate = new Date("09 June 2024 0:00 UTC");  // Sunday
 	const result = [];
 	for (let i = 0; i < 7; i++) {
 		result.push(referenceDate.toLocaleDateString(locale, { weekday: "long" }));
