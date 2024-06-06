@@ -7,6 +7,11 @@
 ### Enhancements
 ### Bug Fixes
 
+## 1.5.32
+
+### Bug Fixes
+* Fix i18n bug in datefield by stripping trailing dot from abbreviated months
+
 ## 1.5.31
 
 ### Bug Fixes
