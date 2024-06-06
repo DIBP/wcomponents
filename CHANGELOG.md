@@ -1,12 +1,16 @@
 # Change log
 
 ## Release in-progress
-* Fix month names and day names being incorrect in some timezones at some times of the day.
-* Fix calendar not closing in webkit browsers when it loses focus to a non-focusable element.
 
 ### API Changes
 ### Enhancements
 ### Bug Fixes
+
+## 1.5.33
+
+### Bug Fixes
+* Fix month names and day names being incorrect in some timezones at some times of the day.
+* Fix calendar not closing in webkit browsers when it loses focus to a non-focusable element.
 
 ## 1.5.32
 
