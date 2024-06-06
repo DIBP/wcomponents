@@ -15,7 +15,8 @@
 ## 1.5.32
 
 ### Bug Fixes
-* Fix i18n bug in datefield by stripping trailing dot from abbreviated months
+* Fix month names and day names being incorrect in some timezones at some times of the day.
+* Fix calendar not closing in webkit browsers when it loses focus to a non-focusable element.
 
 ## 1.5.31
 
