@@ -30,7 +30,7 @@ function initialise() {
 	let monthsAscii = new Array(result.months.length);
 	result.months.forEach((mnthname, idx) => {
 		const ascii = asciify(mnthname);
-		needsAsciiVersion ||= (ascii !== mnthname);
+		needsAsciiVersion = needsAsciiVersion || (ascii !== mnthname);
 		monthsAscii[idx] = ascii;
 	});
 
@@ -48,11 +48,13 @@ function initialise() {
  * @return {string[]}
  */
 function getMonthNames(locale, short) {
-	const referenceDate = new Date(Date.UTC(2000, 0, 1));  // January
+	const referenceDate = new Date(2000, 0, 15);  // January
 	const result = [];
 	const type = short ? "short" : "long";
 	for (let i = 0; i < 12; i++) {
-		result.push(referenceDate.toLocaleDateString(locale, { month: type }));
+		let name = referenceDate.toLocaleDateString(locale, { month: type });
+		name = name.replace(/\.$/, "");
+		result.push(name);
 		referenceDate.setMonth(referenceDate.getMonth() + 1);
 	}
 	return result;

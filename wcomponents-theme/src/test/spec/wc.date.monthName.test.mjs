@@ -12,11 +12,20 @@ describe("wc/date/monthName", function() {
 	const expectedFrAscii = ["janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet",
 		"aout", "septembre", "octobre", "novembre", "decembre"];
 
-	const expectedFrAbbrAscii = ["janv.", "fevr.", "mars", "avr.", "mai", "juin", "juil.",
-		"aout", "sept.", "oct.", "nov.", "dec."];
+	const expectedFrAbbrAscii = ["janv", "fevr", "mars", "avr", "mai", "juin", "juil",
+		"aout", "sept", "oct", "nov", "dec"];
 
 	const lang = globalThis.document.documentElement.lang;
+	const tz = process.env.TZ;
 
+	beforeAll(() => {
+		// PLEASE LEAVE THE TIMEZONE SWITCH IN PLACE even if you don't understand why
+		process.env.TZ = "America/Los_Angeles";
+	});
+
+	afterAll(() => {
+		console.log("Resetting timezone to", tz);
+	});
 
 	beforeEach(() => {
 		globalThis.document.documentElement.lang = lang;
