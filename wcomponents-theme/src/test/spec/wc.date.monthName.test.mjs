@@ -16,7 +16,16 @@ describe("wc/date/monthName", function() {
 		"aout", "sept", "oct", "nov", "dec"];
 
 	const lang = globalThis.document.documentElement.lang;
+	const tz = process.env.TZ;
 
+	beforeAll(() => {
+		// PLEASE LEAVE THE TIMEZONE SWITCH IN PLACE even if you don't understand why
+		process.env.TZ = "America/Los_Angeles";
+	});
+
+	afterAll(() => {
+		console.log("Resetting timezone to", tz);
+	});
 
 	beforeEach(() => {
 		globalThis.document.documentElement.lang = lang;
