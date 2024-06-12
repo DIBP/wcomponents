@@ -662,7 +662,7 @@ function getDialogContent(context) {
 			<cropper-handle action="sw-resize"></cropper-handle>
 			</cropper-selection>
 		</cropper-canvas>
-		<div class="wc_img_cap wc-column" style="height: ${context.style.height}px">
+		<div class="wc_img_cap wc-column">
 			<div id="wc_img_video_container"></div>
 			<button title="${context.imgedit_message_snap}" type="button" class="wc_btn_snap ${context.style.btnclass}" name="snap"><i aria-hidden="true" class="fa fa-camera"></i><span class="${context.style.textclass}">${context.imgedit_action_snap}</span></button>
 		</div>
@@ -1163,7 +1163,7 @@ function saveControl(eventConfig, editor, callbacks, file) {
 			};
 			checkThenSave(callbacks);
 		}
-			*/
+		*/
 	};
 	return click.save;
 }
@@ -1202,47 +1202,51 @@ function validateImage(imageBlob, editor) {
  * @param callbacks
  */
 function checkThenSave(callbacks) {
-	if (imageEdit.getFbImage()) {
-		if (callbacks.validate) {
-			// showHideOverlay(fbCanvas);  // This hide is for the validation, not the save.
-			callbacks.validate().then(function(validationResult) {
-				let error, imageToSave;
-				if (validationResult) {
-					error = validationResult.error;
-					imageToSave = validationResult.validated;
-				}
-				if (error) {
-					// showHideOverlay(fbCanvas, true);  // Unhide the overlay post validation (save will have to hide it again).
-					if (validationResult.ignorable) {
-						prompt.confirm(error, ignoreValidationError => {
-							if (ignoreValidationError) {
-								callbacks.saveFunc(imageToSave);
-							} else {
-								callbacks.lose();
-							}
-						});
-					} else {
-						if (validationResult.prompt) {
-							prompt.alert(error);
+	if (callbacks.validate) {
+		// showHideOverlay(fbCanvas);  // This hide is for the validation, not the save.
+		callbacks.validate().then(function(validationResult) {
+			let error, imageToSave;
+			if (validationResult) {
+				error = validationResult.error;
+				imageToSave = validationResult.validated;
+			}
+			if (error) {
+				// showHideOverlay(fbCanvas, true);  // Unhide the overlay post validation (save will have to hide it again).
+				if (validationResult.ignorable) {
+					prompt.confirm(error, ignoreValidationError => {
+						if (ignoreValidationError) {
+							callbacks.saveFunc(imageToSave);
+						} else {
+							callbacks.lose();
 						}
-						callbacks.lose(error);
-					}
+					});
 				} else {
-					callbacks.saveFunc(imageToSave);
+					if (validationResult.prompt) {
+						prompt.alert(error);
+					}
+					callbacks.lose(error);
 				}
+			} else {
+				callbacks.saveFunc(imageToSave);
+			}
 
-			}, function() {
-				callbacks.lose();
-			});
-		} else {
-			callbacks.saveFunc();
-		}
+		}, function() {
+			callbacks.lose();
+		});
+	} else {
+		callbacks.saveFunc();
+	}
+
+	/*
+	if (imageEdit.getFbImage()) {
+
 	} else {
 		// we should only be here if the user has not taken a snapshot from the video stream
 		i18n.translate("imgedit_noimage").then(function(message) {
 			prompt.alert(message);
 		});
 	}
+	 */
 }
 
 /**
