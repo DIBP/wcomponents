@@ -45,7 +45,7 @@ function processNow(idArr) {
 	}
 }
 
-export default {
+const instance = {
 	/**
 	 * Register Rich Text Fields that need to be initialised.
 	 *
@@ -58,7 +58,10 @@ export default {
 			const callback = () => processNow(idArr);
 			initialise.addCallback((element) => {
 				if (!tinyMCE) {
-					const baseUrl = resourceLoader.getUrlFromImportMap("tinymce/");
+					let baseUrl = resourceLoader.getUrlFromImportMap("tinymce/");
+					while (baseUrl.charAt(baseUrl.length - 1) === '/') {
+						baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+					}
 					return import("tinymce/tinymce.js").then(() => {
 						tinyMCE = element.ownerDocument.defaultView.tinymce;
 						if (baseUrl) {
@@ -73,10 +76,12 @@ export default {
 	}
 };
 
+export default instance;
+
 const rtfTag = "wc-rtf";
 class WRichTextField extends HTMLElement {
 	connectedCallback() {
-		instance.register([this.getAttribute("id")]);
+		// instance.register([this.getAttribute("id")]);
 	}
 }
 
