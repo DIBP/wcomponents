@@ -59,9 +59,12 @@ const instance = {
 			initialise.addCallback((element) => {
 				if (!tinyMCE) {
 					let baseUrl = resourceLoader.getUrlFromImportMap("tinymce/");
+
+					// remove trailing forward slash since TinyMCE adds its own
 					while (baseUrl.charAt(baseUrl.length - 1) === '/') {
 						baseUrl = baseUrl.substring(0, baseUrl.length - 1);
 					}
+
 					return import("tinymce/tinymce.js").then(() => {
 						tinyMCE = element.ownerDocument.defaultView.tinymce;
 						if (baseUrl) {
@@ -81,7 +84,7 @@ export default instance;
 const rtfTag = "wc-rtf";
 class WRichTextField extends HTMLElement {
 	connectedCallback() {
-		// instance.register([this.getAttribute("id")]);
+		instance.register([this.parentElement.getAttribute("id")]);
 	}
 }
 
