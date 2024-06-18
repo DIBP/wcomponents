@@ -80,14 +80,3 @@ const instance = {
 };
 
 export default instance;
-
-const rtfTag = "wc-rtf";
-class WRichTextField extends HTMLElement {
-	connectedCallback() {
-		instance.register([this.parentElement.getAttribute("id")]);
-	}
-}
-
-if (!customElements.get(rtfTag)) {
-	customElements.define(rtfTag, WRichTextField);
-}

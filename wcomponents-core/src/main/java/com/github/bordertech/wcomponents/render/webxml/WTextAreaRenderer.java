@@ -66,7 +66,7 @@ class WTextAreaRenderer extends AbstractWebXmlRenderer {
 			 * such as turning rich text features on or off, or specifying JSON config either as
 			 * a URL attribute or a nested CDATA section.
 			 */
-			xml.append("<wc-rtf></wc-rtf>");
+			xml.append("<ui:rtf />");
 		}
 
 		String textString = textArea.getText();

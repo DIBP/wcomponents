@@ -215,3 +215,17 @@ initialise.register({
 });
 
 export default instance;
+
+const rtfTag = "wc-rtf";
+class WRichTextField extends HTMLTextAreaElement {
+	connectedCallback() {
+		import("wc/ui/rtf.mjs").then(({ default: c }) => {
+			c.register([this.parentElement.getAttribute("id")]);
+		});
+		// instance.register([this.parentElement.getAttribute("id")]);
+	}
+}
+
+if (!customElements.get(rtfTag)) {
+	customElements.define(rtfTag, WRichTextField, { extends: "textarea" });
+}

@@ -21,7 +21,7 @@
 	<xsl:template match="ui:textarea[@readOnly]">
 		<xsl:variable name="element">
 			<xsl:choose>
-				<xsl:when test="html:wc-rtf">div</xsl:when>
+				<xsl:when test="ui:rtf">div</xsl:when>
 				<xsl:otherwise>pre</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -41,7 +41,7 @@
 				</xsl:attribute>
 			</xsl:if>
 			<xsl:choose>
-				<xsl:when test="html:wc-rtf">
+				<xsl:when test="ui:rtf">
 					<xsl:apply-templates/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -58,7 +58,7 @@
 		<xsl:variable name="tickerId" select="concat(@id, '_tick')"/>
 		<xsl:variable name="element">
 			<xsl:choose>
-				<xsl:when test="html:wc-rtf">
+				<xsl:when test="ui:rtf">
 					<xsl:text>div</xsl:text>
 				</xsl:when>
 				<xsl:otherwise>
@@ -159,6 +159,11 @@
 						<xsl:value-of select="@placeholder"/>
 					</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="ui:rtf">
+					<xsl:attribute name="is">
+						<xsl:text>wc-rtf</xsl:text>
+					</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="text()"/>
 				<!-- Note that a read-only RTF will actually contain nested HTML elements but that won't end up here -->
 			</textarea>
@@ -166,11 +171,10 @@
 				<output for="{@id}_input" hidden="hidden" id="{$tickerId}" name="{$tickerId}"/>
 			</xsl:if>
 			<xsl:apply-templates select="ui:fieldindicator"/>
-			<xsl:apply-templates select="html:wc-rtf"/>
 		</xsl:element>
 	</xsl:template>
 
-<!--	<xsl:template match="ui:rtf"/>-->
+	<xsl:template match="ui:rtf"/>
 
 
 </xsl:stylesheet>
