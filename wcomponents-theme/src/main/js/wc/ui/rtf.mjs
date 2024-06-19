@@ -61,8 +61,10 @@ const instance = {
 					let baseUrl = resourceLoader.getUrlFromImportMap("tinymce/");
 
 					// remove trailing forward slash since TinyMCE adds its own
-					while (baseUrl.charAt(baseUrl.length - 1) === '/') {
-						baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+					if (baseUrl) {
+						while (baseUrl.charAt(baseUrl.length - 1) === '/') {
+							baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+						}
 					}
 
 					return import("tinymce/tinymce.js").then(() => {

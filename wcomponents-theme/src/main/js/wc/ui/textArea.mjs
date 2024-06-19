@@ -222,7 +222,6 @@ class WRichTextField extends HTMLTextAreaElement {
 		import("wc/ui/rtf.mjs").then(({ default: c }) => {
 			c.register([this.parentElement.getAttribute("id")]);
 		});
-		// instance.register([this.parentElement.getAttribute("id")]);
 	}
 }
 
