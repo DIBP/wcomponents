@@ -3,6 +3,17 @@ describe("wc/date/dayName", function() {
 	let mondayWeek,
 		defaultWeek;
 
+	const tz = process.env.TZ;
+
+	beforeAll(() => {
+		// PLEASE LEAVE THE TIMEZONE SWITCH IN PLACE even if you don't understand why
+		process.env.TZ = "America/Los_Angeles";
+	});
+
+	afterAll(() => {
+		console.log("Resetting timezone to", tz);
+	});
+
 	beforeEach(() => {
 		defaultWeek = dayName.get();
 		mondayWeek = dayName.get(true);
