@@ -216,8 +216,9 @@ initialise.register({
 
 export default instance;
 
+// Handle registration of rich text areas
 const rtfTag = "wc-rtf";
-class WRichTextField extends HTMLTextAreaElement {
+class WRichTextField extends HTMLElement {
 	connectedCallback() {
 		import("wc/ui/rtf.mjs").then(({ default: c }) => {
 			c.register([this.parentElement.getAttribute("id")]);
@@ -226,5 +227,5 @@ class WRichTextField extends HTMLTextAreaElement {
 }
 
 if (!customElements.get(rtfTag)) {
-	customElements.define(rtfTag, WRichTextField, { extends: "textarea" });
+	customElements.define(rtfTag, WRichTextField);
 }
