@@ -84,15 +84,8 @@ class FabricUndoRedo {
 				renderCanvas();
 			}
 		}
-		function objectAdded($event) {
-			const object = $event.target;
-			if (object && object.width && object.height) {  // e.g. when a redact rect is added it has zero dimensions
-				debounceSave();
-			}
-		}
 
 		imageEdit.getCanvas().on("object:modified", debounceSave);
-		imageEdit.getCanvas().on("object:added", objectAdded);
 
 		this.save = debounceSave;
 

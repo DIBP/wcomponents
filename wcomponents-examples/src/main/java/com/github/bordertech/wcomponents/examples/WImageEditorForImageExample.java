@@ -45,7 +45,6 @@ public class WImageEditorForImageExample extends WPanel {
 	private final WTemplate script = new WTemplate("com/github/bordertech/wcomponents/examples/initImageEditExample.hbs", TemplateRendererFactory.TemplateEngine.HANDLEBARS);
 
 	private final WCheckBox chbCrop = new WCheckBox(true);
-	private final WCheckBox chbRedact = new WCheckBox(true);
 
 	private final WMultiFileWidget fileUploadWidget = new WMultiFileWidget() {
 		@Override
@@ -71,8 +70,6 @@ public class WImageEditorForImageExample extends WPanel {
 		optionSet.add(optionLayout);
 
 		optionLayout.addField("Allow crop image", chbCrop);
-		optionLayout.addField("Enable Redact image", chbRedact);
-
 		WButton applyButton = new WButton("Apply");
 		optionLayout.addField(applyButton);
 
@@ -124,7 +121,6 @@ public class WImageEditorForImageExample extends WPanel {
 		detail.reset();
 		// Editor config parameters
 		script.addParameter("paramCrop", chbCrop.isSelected());
-		script.addParameter("paramRedact", chbRedact.isSelected());
 		// Setup the image content
 		ImageResource content = new ImageResource("/com/github/bordertech/wcomponents/examples/Einstein.jpg", "portrait", REDACT_DIMENION);
 		editImage.setImage(new MyContent(content));
