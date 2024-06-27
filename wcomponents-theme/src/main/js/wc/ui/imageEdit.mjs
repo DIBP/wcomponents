@@ -11,6 +11,8 @@ import ImageUndoRedo from "wc/ui/ImageUndoRedo.mjs";
 import fileSize from "wc/file/size.mjs";
 import fileUtil from "wc/file/util.mjs";
 import getViewportSize from "wc/dom/getViewportSize.mjs";
+import initialise from "wc/dom/initialise.mjs";
+import formUpdateManager from "wc/dom/formUpdateManager.mjs";
 import Cropper from '../../lib/cropperjs/dist/cropper.esm.js';
 
 
@@ -29,17 +31,6 @@ const registeredIds = {},
  * It may also be used to edit static images after they have been uploaded as long as a file uploader is configured to take the edited images.
  */
 const imageEdit = {
-
-	getFabric: function() {
-		const exports = window.exports || (window.exports = {});
-		if (fabric) {
-			return Promise.resolve(fabric);
-		}
-		return import("fabric/dist/fabric.js").then(() => {
-			fabric = exports["fabric"];
-			return fabric;
-		});
-	},
 
 	renderCanvas: function(callback) {
 		if (timer) {
@@ -67,7 +58,6 @@ const imageEdit = {
 		rotate: true,
 		zoom: true,
 		move: true,
-		redact: false,
 		reset: true,
 		undo: true,
 		cancel: true,
@@ -94,21 +84,11 @@ const imageEdit = {
 
 		if (!inited) {
 			inited = true;
-
-			import("wc/dom/initialise.mjs").then(module => {
-				const initialise = module.default;
-				initialise.addCallback(element => {
-					return imageEdit.getFabric().then(() => {
-						event.add(element, "click", clickEvent);
-						handleInline(inline);
-						inline = null;
-					});
-				});
-
-				import("wc/dom/formUpdateManager.mjs").then(mod => {
-					const formUpdateManager = mod.default;
-					formUpdateManager.subscribe(imageEdit);
-				});
+			initialise.addCallback(element => {
+				event.add(element, "click", clickEvent);
+				handleInline(inline);
+				inline = null;
+				formUpdateManager.subscribe(imageEdit);
 			});
 		}
 	},
@@ -402,11 +382,11 @@ function editFile(config, file, win, lose) {
 			lose: lose
 		},
 		gotEditor = function(editor) {
-			fbCanvas = new fabric.Canvas("wc_img_canvas", {
-				enableRetinaScaling: false
-			});
-			fbCanvas.setWidth(config.width);
-			fbCanvas.setHeight(config.height);
+			// fbCanvas = new fabric.Canvas("wc_img_canvas", {
+			// 	enableRetinaScaling: false
+			// });
+			// fbCanvas.setWidth(config.width);
+			// fbCanvas.setHeight(config.height);
 			overlayUrl = config.overlay;
 			if (typeof file === "string") {
 				imageEdit.renderImage(file);
@@ -437,18 +417,7 @@ function editFile(config, file, win, lose) {
 				};
 			}
 		};
-	if (config.redact) {
-		import("wc/ui/imageRedact.mjs").then(module => {
-			const imageRedact = module.default;
-			config.redactor = imageRedact;
-			getEditor(config, callbacks, file).then(function(editor) {
-				gotEditor(editor);
-				config.redactor.activate(imageEdit);
-			});
-		});
-	} else {
-		getEditor(config, callbacks, file).then(gotEditor);
-	}
+	getEditor(config, callbacks, file).then(gotEditor);
 	return callbacks;
 }
 
@@ -589,7 +558,6 @@ function getEditor(config, callbacks, file) {
 					rotate: config.rotate,
 					zoom: config.zoom,
 					move: config.move,
-					redact: config.redact,
 					reset: config.reset,
 					undo: config.undo,
 					cancel: config.cancel,
@@ -603,9 +571,6 @@ function getEditor(config, callbacks, file) {
 				// cancelControl(actions.events, cntnr, callbacks);
 				// saveControl(actions.events, cntnr, callbacks, file);
 				// rotationControls(actions.events);
-				// if (config.redactor) {
-				// 	config.redactor.controls(actions.events, cntnr);
-				// }
 
 				// if (!file) {
 				// 	cntnr.classList.add("wc_camenable");
@@ -670,7 +635,7 @@ function getDialogContent(context) {
 			<p>${context.imgedit_message_nocapture}</p>
 		</div>
 		<div class="wc_img_controls wc-column">
-			${controlsTemplate(context, ["rotate", "zoom", "move", "redact", "reset"].filter(featureFilter))}
+			${controlsTemplate(context, ["rotate", "zoom", "move", "reset"].filter(featureFilter))}
 			<div>
 				${controlsTemplate(context, ["undo", "cancel", "save"].filter(featureFilter))}
 			</div>
@@ -706,14 +671,6 @@ function controlsTemplate(context, features) {
 		<button title="${context.imgedit_message_move_right}" type="button" class="wc_btn_right ${context.style.btnclass}" name="right"><i aria-hidden="true" class="fa fa-caret-right"></i><span class="${context.style.textclass}">${context.imgedit_move_right}</span></button>
 		<button title="${context.imgedit_message_move_down}" type="button" class="wc_btn_down ${context.style.btnclass}" name="down"><i aria-hidden="true" class="fa fa-caret-down"></i><span class="${context.style.textclass}">${context.imgedit_move_down}</span></button>
 	</fieldset>`,
-		redact: `
-	<fieldset>
-		<legend>${context.imgedit_redact}</legend>
-		<label>${context.imgedit_action_redact}
-			<input title="${context.imgedit_message_redact}" type="checkbox" name="redact"/>
-		</label>
-	</fieldset>
-`,
 		capture: `
 	<fieldset class="wc_img_capture">
 		<legend>${context.imgedit_capture}</legend>
@@ -743,15 +700,15 @@ function controlsTemplate(context, features) {
 }
 
 function getTranslations(obj) {
-	const messages = ["imgedit_action_camera", "imgedit_action_cancel", "imgedit_action_redact",
+	const messages = ["imgedit_action_camera", "imgedit_action_cancel",
 		"imgedit_action_redo", "imgedit_action_reset", "imgedit_action_save", "imgedit_action_snap", "imgedit_action_undo",
 		"imgedit_capture", "imgedit_message_camera", "imgedit_message_cancel", "imgedit_message_move_center", "imgedit_message_move_down",
 		"imgedit_message_move_left", "imgedit_message_move_right", "imgedit_message_move_up",
-		"imgedit_message_nocapture", "imgedit_message_redact", "imgedit_message_redo", "imgedit_message_reset",
+		"imgedit_message_nocapture", "imgedit_message_redo", "imgedit_message_reset",
 		"imgedit_message_rotate_left", "imgedit_message_rotate_left90", "imgedit_message_rotate_right",
 		"imgedit_message_rotate_right90", "imgedit_message_save", "imgedit_message_snap",
 		"imgedit_message_undo", "imgedit_message_zoom_in", "imgedit_message_zoom_out", "imgedit_move",
-		"imgedit_move_center", "imgedit_move_down", "imgedit_move_left", "imgedit_move_right", "imgedit_move_up", "imgedit_redact",
+		"imgedit_move_center", "imgedit_move_down", "imgedit_move_left", "imgedit_move_right", "imgedit_move_up",
 		"imgedit_rotate", "imgedit_rotate_left", "imgedit_rotate_left90", "imgedit_rotate_right",
 		"imgedit_rotate_right90", "imgedit_zoom", "imgedit_zoom_in", "imgedit_zoom_out"];
 	return i18n.translate(messages).then(translations => {
