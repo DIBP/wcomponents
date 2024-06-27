@@ -77,7 +77,7 @@ async function build(singleFile) {
  */
 async function buildSingle(singleFile) {
 	let fileName = singleFile;
-	themeLinter.run(singleFile);
+	themeLinter.run(singleFile, false);
 	fileName = fileName.replace(dirs.script.src, "");
 	let conf = config;
 	Object.assign({}, conf);

@@ -59,9 +59,10 @@ function getLintTarget(target) {
 /**
  * Runs ESLint rules on the file in question and logs any warnings or errors discovered.
  * @param {string} target The path to the file to lint
+ * @param {boolean} failOnError If truthy the build will fail when there are lint errors
  * @returns The raw ESLint results when done.
  */
-async function runEslint(target) {
+async function runEslint(target, failOnError = true) {
 	const lintTarget = getLintTarget(target);
 	const uglyReport =  await eslintCli.lintFiles(lintTarget);
 	const formatter = await eslintCli.loadFormatter();
@@ -72,9 +73,12 @@ async function runEslint(target) {
 			return result.fatalErrorCount > 0 || result.errorCount > 0;
 		});
 		if (errorResults.length) {
-			throw new Error("THEME LINTER: There are lint errors, fix them.");
+			if (failOnError) {
+				throw new Error("THEME LINTER: There are lint errors, fix them.");
+			}
+		} else {
+			console.log("THEME LINTER: No fatal lint errors.");
 		}
-		console.log("THEME LINTER: No fatal lint errors.");
 	}
 	return uglyReport;
 }
