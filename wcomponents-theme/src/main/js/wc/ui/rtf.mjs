@@ -2,7 +2,7 @@
  * Provides a Rich Text Field implementation using tinyMCE.
  *
  * Optional module configuration.
- * The config member "initObj" can be set to an abject containing any tinyMCE cofiguration members **except**
+ * The config member "initObj" can be set to an abject containing any tinyMCE configuration members **except**
  * selector. This allows customised RTF per implementation. This should be added in the template
  */
 import initialise from "wc/dom/initialise.mjs";
@@ -60,14 +60,14 @@ const instance = {
 				if (!tinyMCE) {
 					let baseUrl = resourceLoader.getUrlFromImportMap("tinymce/");
 
-					// remove trailing forward slash since TinyMCE adds its own
-					while (baseUrl?.charAt(baseUrl.length - 1) === '/') {
-						baseUrl = baseUrl.substring(0, baseUrl.length - 1);
-					}
-
-					return import("tinymce/tinymce.js").then(() => {
+					return import(`${baseUrl}tinymce.js`).then(() => {
 						tinyMCE = element.ownerDocument.defaultView.tinymce;
 						if (baseUrl) {
+							// remove trailing forward slash since TinyMCE adds its own
+							while (baseUrl.charAt(baseUrl.length - 1) === '/') {
+								baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+							}
+
 							tinyMCE.baseURL = baseUrl;
 						}
 						callback();
