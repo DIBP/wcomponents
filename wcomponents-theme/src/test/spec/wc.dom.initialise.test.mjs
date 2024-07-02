@@ -10,7 +10,7 @@ describe("wc/dom/initialise", () => {
 
 	afterAll(() => {
 		setView(origWindow);
-	})
+	});
 
 	beforeEach(() => {
 		return setUpExternalHTML("domUsefulDom.html").then(dom => {
