@@ -608,8 +608,47 @@ function getEditor(config, callbacks, file) {
 	return getEditorContext(config, callbacks);
 }
 
+function fitImage($event, cropperCanvas, cropperImage, imageFit="contain") {
+	const cropperCanvasRect = cropperCanvas.getBoundingClientRect();
+	const cropperImageRect = cropperImage.getBoundingClientRect();
+
+	if (
+		(imageFit === "contain" && (
+			(
+				cropperImageRect.top > cropperCanvasRect.top
+				&& cropperImageRect.right < cropperCanvasRect.right
+			)
+			|| (
+				cropperImageRect.right < cropperCanvasRect.right
+				&& cropperImageRect.bottom < cropperCanvasRect.bottom
+			)
+			|| (
+				cropperImageRect.bottom < cropperCanvasRect.bottom
+				&& cropperImageRect.left > cropperCanvasRect.left
+			)
+			|| (
+				cropperImageRect.left > cropperCanvasRect.left
+				&& cropperImageRect.top > cropperCanvasRect.top
+			)
+		))
+		|| (imageFit === "cover" && (
+			cropperImageRect.top > cropperCanvasRect.top
+			|| cropperImageRect.right < cropperCanvasRect.right
+			|| cropperImageRect.bottom < cropperCanvasRect.bottom
+			|| cropperImageRect.left > cropperCanvasRect.left
+		))
+	) {
+		$event.preventDefault();
+	}
+}
+
 function onCropperImageTransform($event) {
+	const cropperImage = document.querySelector("cropper-image");
+	const cropperCanvas = document.querySelector("cropper-canvas");
+	// cropperImage.style.transform = `matrix(${$event.detail.matrix.join(", ")})`;
+	fitImage($event, cropperCanvas, cropperImage, "contain");
 	console.log("TRANSFORM", $event);
+
 }
 
 function getDialogContent(context) {
@@ -619,7 +658,7 @@ function getDialogContent(context) {
 			<cropper-image alt="Picture" rotatable scalable skewable translatable></cropper-image>
 			<cropper-shade hidden></cropper-shade>
 			<cropper-handle action="select" plain></cropper-handle>
-				<cropper-selection initial-coverage="0.5" movable resizable zoomable>
+				<cropper-selection initial-coverage="0.5" zoomable movable resizable> <!-- movable resizable  -->
 			<cropper-grid role="grid" covered></cropper-grid>
 			<cropper-crosshair centered></cropper-crosshair>
 			<cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
