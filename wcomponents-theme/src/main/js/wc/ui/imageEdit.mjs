@@ -586,6 +586,8 @@ function getEditor(config, callbacks, file) {
 					if (callbacks.rendered) {
 						callbacks.rendered(contentContainer);
 					}
+					const cropperSelection = document.querySelector("cropper-selection");
+					cropperSelection.$center();
 				}
 				return contentContainer;
 			};
@@ -646,7 +648,7 @@ function onCropperImageTransform($event) {
 	const cropperImage = document.querySelector("cropper-image");
 	const cropperCanvas = document.querySelector("cropper-canvas");
 	// cropperImage.style.transform = `matrix(${$event.detail.matrix.join(", ")})`;
-	fitImage($event, cropperCanvas, cropperImage, "contain");
+	// fitImage($event, cropperCanvas, cropperImage, "contain");
 	console.log("TRANSFORM", $event);
 
 }
@@ -655,21 +657,21 @@ function getDialogContent(context) {
 	const featureFilter = name => context.feature[name];
 	return `
 		<cropper-canvas background style="width: 100%; height:100%">
-			<cropper-image alt="Picture" rotatable scalable skewable translatable></cropper-image>
+			<cropper-image alt="Picture" rotatable scalable translatable></cropper-image>
 			<cropper-shade hidden></cropper-shade>
 			<cropper-handle action="select" plain></cropper-handle>
-				<cropper-selection initial-coverage="0.5" zoomable movable resizable> <!-- movable resizable  -->
-			<cropper-grid role="grid" covered></cropper-grid>
-			<cropper-crosshair centered></cropper-crosshair>
-			<cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
-			<cropper-handle action="n-resize"></cropper-handle>
-			<cropper-handle action="e-resize"></cropper-handle>
-			<cropper-handle action="s-resize"></cropper-handle>
-			<cropper-handle action="w-resize"></cropper-handle>
-			<cropper-handle action="ne-resize"></cropper-handle>
-			<cropper-handle action="nw-resize"></cropper-handle>
-			<cropper-handle action="se-resize"></cropper-handle>
-			<cropper-handle action="sw-resize"></cropper-handle>
+			<cropper-selection width="${context.style.width}" height="${context.style.height}" movable> <!-- zoomable movable resizable  -->
+				<cropper-grid role="grid" covered></cropper-grid>
+<!--			<cropper-crosshair centered></cropper-crosshair>-->
+				<cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+<!--			<cropper-handle action="n-resize"></cropper-handle>-->
+<!--			<cropper-handle action="e-resize"></cropper-handle>-->
+<!--			<cropper-handle action="s-resize"></cropper-handle>-->
+<!--			<cropper-handle action="w-resize"></cropper-handle>-->
+<!--			<cropper-handle action="ne-resize"></cropper-handle>-->
+<!--			<cropper-handle action="nw-resize"></cropper-handle>-->
+<!--			<cropper-handle action="se-resize"></cropper-handle>-->
+<!--			<cropper-handle action="sw-resize"></cropper-handle>-->
 			</cropper-selection>
 		</cropper-canvas>
 		<div class="wc_img_cap wc-column">
