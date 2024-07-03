@@ -394,6 +394,7 @@ function editFile(config, file, win, lose) {
 				const fileReader = new FileReader();
 				fileReader.onload = function ($event) {
 					const cropperImage = document.querySelector("cropper-image");
+					cropperImage.addEventListener("transform", onCropperImageTransform);
 					cropperImage.setAttribute("src", $event.target.result);
 				};
 				fileReader.readAsDataURL(file);
@@ -519,6 +520,7 @@ function getEditorContext(config, callbacks) {
 	}
 	return getDialogFrameConfig(() => {
 		getImageCapture().stop();
+		dialogFrame.resetContent();
 		callbacks.lose();
 	}).then(dialogConfig => {
 		callbacks.rendered = () => dialogFrame.reposition();
@@ -606,11 +608,15 @@ function getEditor(config, callbacks, file) {
 	return getEditorContext(config, callbacks);
 }
 
+function onCropperImageTransform($event) {
+	console.log("TRANSFORM", $event);
+}
+
 function getDialogContent(context) {
 	const featureFilter = name => context.feature[name];
 	return `
 		<cropper-canvas background style="width: 100%; height:100%">
-			<cropper-image alt="Picture"></cropper-image>
+			<cropper-image alt="Picture" rotatable scalable skewable translatable></cropper-image>
 			<cropper-shade hidden></cropper-shade>
 			<cropper-handle action="select" plain></cropper-handle>
 				<cropper-selection initial-coverage="0.5" movable resizable zoomable>
