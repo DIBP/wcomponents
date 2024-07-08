@@ -1137,13 +1137,14 @@ function saveControl(eventConfig, editor, callbacks, file) {
 	 * Respond to the user's intent to save.
 	 */
 	click.save = {
-		func: function () {
-			const selection = document.querySelector("cropper-selection");
-			selection.$toCanvas().then(cropped => {
-				document.body.appendChild(cropped);
-			});
-		}
-		/**
+		// func: function () {
+		// 	const selection = document.querySelector("cropper-selection");
+		// 	selection.$toCanvas().then(cropped => {
+		// 		document.body.appendChild(cropped);
+		// 	});
+		// 	callbacks.formatForSave = getCanvasAsFile;
+		// }
+
 		func: function() {
 			callbacks.formatForSave = getCanvasAsFile;
 			callbacks.validate = function() {
@@ -1167,7 +1168,6 @@ function saveControl(eventConfig, editor, callbacks, file) {
 			};
 			checkThenSave(callbacks);
 		}
-		*/
 	};
 	return click.save;
 }
@@ -1323,22 +1323,23 @@ function unscale(fbImage) {
  * @param {Element} editor The file input associated with the image we are editing.
  */
 function getCanvasAsDataUrl(editor) {
-	const serialized = canvasToDataUrl();
-	if (serialized) {
-		const fileSelector = getFileSelector(editor);
-		if (fileSelector) {
-			const param = fileSelector.name;
-			if (param) {
-				const form = fileSelector.form || fileSelector.closest("form");
-				fileSelector.disabled = true;
-				const stateField = form.appendChild(document.createElement("input"));
-				stateField.type = "hidden";
-				stateField.name = param;
-				stateField.value = serialized;
-				return stateField;
+	canvasToDataUrl().then(serialized => {
+		if (serialized) {
+			const fileSelector = getFileSelector(editor);
+			if (fileSelector) {
+				const param = fileSelector.name;
+				if (param) {
+					const form = fileSelector.form || fileSelector.closest("form");
+					fileSelector.disabled = true;
+					const stateField = form.appendChild(document.createElement("input"));
+					stateField.type = "hidden";
+					stateField.name = param;
+					stateField.value = serialized;
+					return stateField;
+				}
 			}
 		}
-	}
+	});
 	return null;
 }
 
@@ -1367,9 +1368,9 @@ function getImageToSave(editor, originalImage, renderer) {
 		console.log("No changes made, using original file");
 		return originalImage;  // if the user has made no changes simply pass thru the original file.
 	}
-	showHideOverlay(fbCanvas);
+	// showHideOverlay(fbCanvas);
 	const result = renderFunc(editor, originalImage);
-	showHideOverlay(fbCanvas, true);
+	// showHideOverlay(fbCanvas, true);
 	return result;
 }
 
@@ -1389,11 +1390,19 @@ function getCanvasAsFile(editor, originalImage) {
 	return null;
 }
 
+function canvasToDataUrl() {
+	const selection = document.querySelector("cropper-selection");
+	return selection.$toCanvas().then(cropped => {
+		return cropped.toDataURL();
+	});
+}
+
+
 /**
  * Serialize the edited image on the canvas to a data url.
  * @returns {string} The image on the canvas as a data url.
  */
-function canvasToDataUrl() {
+function canvasToDataUrlFabric() {
 	let result, toDataUrlParams, object;
 	const fbImage = imageEdit.getFbImage();
 	if (fbImage) {

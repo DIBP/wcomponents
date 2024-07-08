@@ -199,7 +199,9 @@ const instance = {
 			content.className = CONTENT_BASE_CLASS;
 
 			if (!keepContent) {
-				i18n.translate("loading").then(loadingText => content.innerHTML = /** @type {string} */(loadingText));
+				i18n.translate("loading").then(loadingText => {
+					content.innerHTML = /** @type {string} */(loadingText);
+				});
 			}
 		}
 	}
