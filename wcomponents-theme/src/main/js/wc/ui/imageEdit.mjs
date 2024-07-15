@@ -1129,7 +1129,7 @@ function saveControl(eventConfig, editor, callbacks, file) {
 			editor: editor,
 			callbacks: callbacks,
 			cancel: false,
-			originalImage: file,
+			// originalImage: file,
 			imageToSave: imageToSave });
 	};
 
@@ -1152,15 +1152,16 @@ function saveControl(eventConfig, editor, callbacks, file) {
 				if (selector) {
 					const max = fileSize.getMax(selector);
 					if (max) {
-						const formattedImage = getImageToSave(null, file, callbacks.formatForSave);
-						return validateImage(formattedImage, editor).then(message => {
-							const config = imageEdit.getConfig(selector);
-							return {
-								validated: formattedImage,
-								ignorable: config.ftlignore,
-								error: message,
-								prompt: config.invalidprompt
-							};
+						return getImageToSave(null, file, callbacks.formatForSave).then(formattedImage => {
+							return validateImage(formattedImage, editor).then(message => {
+								const config = imageEdit.getConfig(selector);
+								return {
+									validated: formattedImage,
+									ignorable: config.ftlignore,
+									error: message,
+									prompt: config.invalidprompt
+								};
+							});
 						});
 					}
 				}
@@ -1271,14 +1272,20 @@ function saveImage(args) {
 			getImageCapture().stop();
 			editor.parentNode.removeChild(editor);
 		};
+
 	try {
 		if (args.cancel) {
 			done();
 			callbacks.lose();
 		} else {
-			const result = args.imageToSave || getImageToSave(editor, args.originalImage, callbacks.formatForSave);
-			done();
-			callbacks.win(result);
+			if (args.imageToSave) {
+				return Promise.resolve(args.imageToSave);
+			}
+
+			getImageToSave(editor, args.originalImage, callbacks.formatForSave).then(result => {
+				done();
+				callbacks.win(result);
+			});
 		}
 	} finally {
 		// dialogFrame.close();
@@ -1360,34 +1367,40 @@ function getFileSelector(editor) {
  * @param {Element} editor The file input associated with the image we are editing.
  * @param {Blob} originalImage The source image file which the user loaded into the editor.
  * @param {Function} [renderer] The function to use to convert the image on the canvas to the desired save format.
- * @returns The image (including any edits) in the format configured for saving.
+ * @returns A promise that resolves with the image (including any edits) in the format configured for saving.
  */
 function getImageToSave(editor, originalImage, renderer) {
-	const config = imageEdit.getConfig(editor), renderFunc = renderer || getCanvasAsFile;
+	const config = imageEdit.getConfig(editor),
+		renderFunc = renderer || getCanvasAsFile;
 	if (originalImage && !hasChanged(config)) {
 		console.log("No changes made, using original file");
 		return originalImage;  // if the user has made no changes simply pass thru the original file.
 	}
 	// showHideOverlay(fbCanvas);
-	const result = renderFunc(editor, originalImage);
-	// showHideOverlay(fbCanvas, true);
-	return result;
+	return renderFunc(editor, originalImage).then(result => {
+		// showHideOverlay(fbCanvas, true);
+		return result;
+	});
 }
 
 /**
  * Gets the edited image on the canvas as a binary file.
  * @param {Element} editor The file input associated with the image we are editing.
  * @param {Blob} originalImage The original image file being edited.
- * @returns {File} The edited image as a file / blob.
+ * @returns {Promise<File>} The edited image as a file / blob.
  */
 function getCanvasAsFile(editor, originalImage) {
-	const dataUrl = canvasToDataUrl();
-	if (dataUrl) {
-		let result = fileUtil.blobToFile(fileUtil.dataURItoBlob(dataUrl), originalImage);
-		result = fileUtil.fixFileExtension(result);
-		return result;
-	}
-	return null;
+	/**
+	 * @param {string} dataUrl The image on the canvas as a data url.
+	 */
+	const cb = dataUrl => {
+		if (dataUrl) {
+			const result = fileUtil.blobToFile(fileUtil.dataURItoBlob(dataUrl), originalImage);
+			return fileUtil.fixFileExtension(result);
+		}
+		return null;
+	};
+	return canvasToDataUrl().then(cb);
 }
 
 function canvasToDataUrl() {
