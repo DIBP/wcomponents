@@ -13,7 +13,7 @@ import fileUtil from "wc/file/util.mjs";
 import getViewportSize from "wc/dom/getViewportSize.mjs";
 import initialise from "wc/dom/initialise.mjs";
 import formUpdateManager from "wc/dom/formUpdateManager.mjs";
-import Cropper from '../../lib/cropperjs/dist/cropper.esm.js';
+import Cropper from 'lib/cropperjs/dist/cropper.esm.js';
 
 
 
@@ -552,7 +552,7 @@ function getEditor(config, callbacks, file) {
 			editorProps = {
 				style: {
 					width: config.displayWidth,
-					height: config.displayWidth,
+					height: config.displayHeight,
 					textclass: "wc-off",
 					btnclass: "wc_btn_icon"
 				},
@@ -655,9 +655,17 @@ function onCropperImageTransform($event) {
 
 function getDialogContent(context) {
 	const featureFilter = name => context.feature[name];
+	const imageConfig = ["translatable"];
+	if (context.rotate) {
+		imageConfig.push("rotatable");
+	}
+	if (context.zoom) {
+		imageConfig.push("scalable");
+	}
+
 	return `
 		<cropper-canvas background style="width: 100%; height:100%">
-			<cropper-image alt="Picture" rotatable scalable translatable></cropper-image>
+			<cropper-image alt="Picture" ${imageConfig.join(" ")}></cropper-image>
 			<cropper-shade hidden></cropper-shade>
 			<cropper-handle action="select" plain></cropper-handle>
 			<cropper-selection width="${context.style.width}" height="${context.style.height}" movable> <!-- zoomable movable resizable  -->

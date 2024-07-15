@@ -144,6 +144,7 @@
 					"wc": "</xsl:text><xsl:value-of select="$wcScriptDir" /><xsl:text>",
 					"lib": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>",
 					"lib/sprintf": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/sprintf.min",
+					"lib/cropper": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/cropperjs/dist/cropper.esm",
 					"mailcheck": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/mailcheck",
 					"tinyMCE": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/tinymce/tinymce.min",
 					axs: "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/axs_testing",
