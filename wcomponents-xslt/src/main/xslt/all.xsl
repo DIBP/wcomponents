@@ -144,7 +144,7 @@
 					"wc": "</xsl:text><xsl:value-of select="$wcScriptDir" /><xsl:text>",
 					"lib": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>",
 					"lib/sprintf": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/sprintf.min",
-					"lib/cropper": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/cropperjs/dist/cropper.esm",
+					"lib/cropper": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/cropperjs/dist/cropper.esm.js",
 					"mailcheck": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/mailcheck",
 					"tinyMCE": "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/tinymce/tinymce.min",
 					axs: "</xsl:text><xsl:value-of select="$libScriptDir" /><xsl:text>/axs_testing",
@@ -202,7 +202,8 @@
 							"tinymce/": "</xsl:text><xsl:value-of select="concat(normalize-space($resourceRoot), $libScriptDir, '/tinymce')" />/<xsl:text>",
 							"socket.io/": "</xsl:text><xsl:value-of select="concat(normalize-space($resourceRoot), $libScriptDir, '/socket.io')" />/<xsl:text>",
 							"i18next": "</xsl:text><xsl:value-of select="concat(normalize-space($resourceRoot), $libScriptDir, '/i18next/dist/esm/i18next.js')" /><xsl:text>",
-							"sprintf-js/": "</xsl:text><xsl:value-of select="concat(normalize-space($resourceRoot), $libScriptDir, '/sprintf-js')" />/<xsl:text>"
+							"sprintf-js/": "</xsl:text><xsl:value-of select="concat(normalize-space($resourceRoot), $libScriptDir, '/sprintf-js')" />/<xsl:text>",
+							"cropperjs/": "</xsl:text><xsl:value-of select="concat(normalize-space($resourceRoot), $libScriptDir, '/cropperjs/dist')" />/<xsl:text>"
 						}
 					}
 					</xsl:text>

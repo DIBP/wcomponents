@@ -13,7 +13,7 @@ import fileUtil from "wc/file/util.mjs";
 import getViewportSize from "wc/dom/getViewportSize.mjs";
 import initialise from "wc/dom/initialise.mjs";
 import formUpdateManager from "wc/dom/formUpdateManager.mjs";
-import Cropper from 'lib/cropperjs/dist/cropper.esm.js';
+import Cropper from "cropperjs/cropper.esm.js";
 
 
 
