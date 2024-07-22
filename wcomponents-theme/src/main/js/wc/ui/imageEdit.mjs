@@ -518,12 +518,12 @@ function getEditorProps(config) {
 		},
 		feature: {
 			rotate: config.rotate,
-				zoom: config.zoom,
-				move: config.move,
-				reset: config.reset,
-				undo: config.undo,
-				cancel: config.cancel,
-				save: config.save
+			zoom: config.zoom,
+			move: config.move,
+			reset: config.reset,
+			undo: config.undo,
+			cancel: config.cancel,
+			save: config.save
 		}
 	};
 }
@@ -548,11 +548,10 @@ function getEditor(config, callbacks, file) {
 		const container = document.body.appendChild(document.createElement("div")),
 			editorProps = getEditorProps(config),
 			done = function(dialogContent) {
-				// zoomControls(actions.events);
+				//
 				// moveControls(actions.events);
 
 				// cancelControl(actions.events, cntnr, callbacks);
-				// saveControl(actions.events, cntnr, callbacks, file);
 				// rotationControls(actions.events);
 
 				// if (!file) {
@@ -563,6 +562,7 @@ function getEditor(config, callbacks, file) {
 				if (contentContainer && dialogContent) {
 					const actions = attachEventHandlers(contentContainer);
 					saveControl(actions.events, contentContainer, callbacks, file);
+					zoomControls(actions.events);
 					actions.events.click.reset =  {
 						func: function() {
 							const selection = getSelection();
@@ -571,6 +571,7 @@ function getEditor(config, callbacks, file) {
 							selection.height = config.displayHeight;
 						}
 					};
+
 					contentContainer.innerHTML = dialogContent;
 					if (callbacks.rendered) {
 						callbacks.rendered(contentContainer);
@@ -645,10 +646,10 @@ function onCropperImageTransform($event) {
 function getDialogContent(context) {
 	const featureFilter = name => context.feature[name];
 	const imageConfig = ["translatable"];
-	if (context.rotate) {
+	if (featureFilter("rotate")) {
 		imageConfig.push("rotatable");
 	}
-	if (context.zoom) {
+	if (featureFilter("zoom")) {
 		imageConfig.push("scalable");
 	}
 
@@ -1011,18 +1012,21 @@ function moveControls(eventConfig) {
 function zoomControls(eventConfig) {
 	const press = eventConfig.press;
 	press.in = {
-		func: numericProp,
-		prop: "scaleX",
-		setter: "scale",
-		step: 0.05
+		func: () => {
+			const imageElement = imageEdit.getFbImage();
+			if (imageElement) {
+				imageElement.$scale(1.05);
+			}
+		}
 	};
 
 	press.out = {
-		func: numericProp,
-		prop: "scaleX",
-		setter: "scale",
-		step: -0.05,
-		min: 0.1
+		func: () => {
+			const imageElement = imageEdit.getFbImage();
+			if (imageElement) {
+				imageElement.$scale(0.95);
+			}
+		}
 	};
 }
 
