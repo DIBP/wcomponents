@@ -201,7 +201,6 @@ const imageEdit = {
 			// @ts-ignore
 			if (img.nodeType  === Node.ELEMENT_NODE && img.matches("img")) {
 				renderCropper(img);
-				// renderFabricImage(new fabric.Image(img));
 			} else {
 				fabric.Image.fromURL(img, renderFabricImage);
 			}
@@ -563,11 +562,12 @@ function getEditor(config, callbacks, file) {
 					const actions = attachEventHandlers(contentContainer);
 					saveControl(actions.events, contentContainer, callbacks, file);
 					zoomControls(actions.events);
+					rotationControls(actions.events);
 					actions.events.click.reset =  {
 						func: function() {
 							const image = imageEdit.getFbImage();
 							image.$setTransform([1, 0, 0, 1, 0, 0]);
-							image.$center()
+							image.$center();
 							const selection = getSelection();
 							selection.$center();
 							selection.width = config.displayWidth;
@@ -1039,34 +1039,40 @@ function zoomControls(eventConfig) {
 function rotationControls(eventConfig) {
 	const press = eventConfig.press;
 	press.clock = {
-		func: numericProp,
-		prop: "angle",
-		setter: "rotate",
-		step: 1
+		func: () => {
+			const imageElement = imageEdit.getFbImage();
+			if (imageElement) {
+				imageElement.$rotate("0.1");
+			}
+		}
 	};
 
 	press.anticlock = {
-		func: numericProp,
-		prop: "angle",
-		setter: "rotate",
-		step: -1
+		func: () => {
+			const imageElement = imageEdit.getFbImage();
+			if (imageElement) {
+				imageElement.$rotate("-0.1");
+			}
+		}
 	};
 
 	const click = eventConfig.click;
 	click.clock90 = {
-		func: numericProp,
-		prop: "angle",
-		setter: "rotate",
-		step: 90,
-		exact: true
+		func: () => {
+			const imageElement = imageEdit.getFbImage();
+			if (imageElement) {
+				imageElement.$rotate("90deg");
+			}
+		}
 	};
 
 	click.anticlock90 = {
-		func: numericProp,
-		prop: "angle",
-		setter: "rotate",
-		step: -90,
-		exact: true
+		func: () => {
+			const imageElement = imageEdit.getFbImage();
+			if (imageElement) {
+				imageElement.$rotate("-90deg");
+			}
+		}
 	};
 }
 
