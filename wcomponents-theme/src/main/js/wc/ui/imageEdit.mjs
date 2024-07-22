@@ -565,6 +565,9 @@ function getEditor(config, callbacks, file) {
 					zoomControls(actions.events);
 					actions.events.click.reset =  {
 						func: function() {
+							const image = imageEdit.getFbImage();
+							image.$setTransform([1, 0, 0, 1, 0, 0]);
+							image.$center()
 							const selection = getSelection();
 							selection.$center();
 							selection.width = config.displayWidth;
