@@ -33,16 +33,7 @@ const registeredIds = {},
 const imageEdit = {
 
 	renderCanvas: function(callback) {
-		if (timer) {
-			timers.clearTimeout(timer);
-		}
-		timer = timers.setTimeout(() => {
-			fbCanvas = imageEdit.getCanvas();
-			fbCanvas.renderAll();
-			if (callback) {
-				callback();
-			}
-		}, 50);
+
 	},
 
 
@@ -69,7 +60,7 @@ const imageEdit = {
 		msgidftlfix: "imgedit_message_fixtoolarge",  // i18n message ID for "fix file too large"
 		autoresize: true  // if true then loading an image that exceeds size validaiton constraints will automatically trigger a resize attempt
 	},
-	getCanvas: () => fbCanvas,
+	getCanvas: () => document.querySelector("cropper-canvas"),
 
 	/**
 	 * Registers a configuration object against a unique ID to specify variables such as overlay image URL, width, height etc.
@@ -302,28 +293,14 @@ const imageEdit = {
 	},
 
 	getFbImage: function(container) {
-		const currentContainer = (container || fbCanvas);
-		if (currentContainer?.getObjects) {
-			let objects = currentContainer.getObjects("image");
-			if (objects?.length) {
-				return objects[0];
-			}
-			objects = currentContainer.getObjects("group");
-			if (objects?.length) {
-				return objects[0];
-			}
-			// for (i = 0; i < objects.length; i++) {
-			//	next = objects[i];
-			//	result = imageEdit.getFbImage(next);
-			//	if (result) {
-			//		return result;
-			//	}
-			// }
-		}
-		return null;
+		const currentContainer = container || document;
+		return currentContainer.querySelector("cropper-image");
 	}
 };
 
+function getSelection() {
+	return document.querySelector("cropper-selection");
+}
 
 
 function addToCanvas(object) {
@@ -393,8 +370,8 @@ function editFile(config, file, win, lose) {
 			} else if (file) {
 				const fileReader = new FileReader();
 				fileReader.onload = function ($event) {
-					const cropperImage = document.querySelector("cropper-image");
-					cropperImage.addEventListener("transform", onCropperImageTransform);
+					const cropperImage = imageEdit.getFbImage();
+					// cropperImage.addEventListener("transform", onCropperImageTransform);
 					cropperImage.setAttribute("src", $event.target.result);
 				};
 				fileReader.readAsDataURL(file);
@@ -531,6 +508,26 @@ function getEditorContext(config, callbacks) {
 	});
 }
 
+function getEditorProps(config) {
+	return {
+		style: {
+			width: config.displayWidth,
+				height: config.displayHeight,
+				textclass: "wc-off",
+				btnclass: "wc_btn_icon"
+		},
+		feature: {
+			rotate: config.rotate,
+				zoom: config.zoom,
+				move: config.move,
+				reset: config.reset,
+				undo: config.undo,
+				cancel: config.cancel,
+				save: config.save
+		}
+	};
+}
+
 /**
  * Builds the editor DOM and displays it to the user.
  * @param {Object} config Map of configuration properties.
@@ -549,27 +546,11 @@ function getEditor(config, callbacks, file) {
 	 */
 	function renderEditor(contentContainer) {
 		const container = document.body.appendChild(document.createElement("div")),
-			editorProps = {
-				style: {
-					width: config.displayWidth,
-					height: config.displayHeight,
-					textclass: "wc-off",
-					btnclass: "wc_btn_icon"
-				},
-				feature: {
-					rotate: config.rotate,
-					zoom: config.zoom,
-					move: config.move,
-					reset: config.reset,
-					undo: config.undo,
-					cancel: config.cancel,
-					save: config.save
-				}
-			},
+			editorProps = getEditorProps(config),
 			done = function(dialogContent) {
 				// zoomControls(actions.events);
 				// moveControls(actions.events);
-				// resetControl(actions.events);
+
 				// cancelControl(actions.events, cntnr, callbacks);
 				// saveControl(actions.events, cntnr, callbacks, file);
 				// rotationControls(actions.events);
@@ -582,11 +563,19 @@ function getEditor(config, callbacks, file) {
 				if (contentContainer && dialogContent) {
 					const actions = attachEventHandlers(contentContainer);
 					saveControl(actions.events, contentContainer, callbacks, file);
+					actions.events.click.reset =  {
+						func: function() {
+							const selection = getSelection();
+							selection.$center();
+							selection.width = config.displayWidth;
+							selection.height = config.displayHeight;
+						}
+					};
 					contentContainer.innerHTML = dialogContent;
 					if (callbacks.rendered) {
 						callbacks.rendered(contentContainer);
 					}
-					const cropperSelection = document.querySelector("cropper-selection");
+					const cropperSelection = getSelection();
 					cropperSelection.$center();
 				}
 				return contentContainer;
@@ -645,8 +634,8 @@ function fitImage($event, cropperCanvas, cropperImage, imageFit="contain") {
 }
 
 function onCropperImageTransform($event) {
-	const cropperImage = document.querySelector("cropper-image");
-	const cropperCanvas = document.querySelector("cropper-canvas");
+	const cropperImage = imageEdit.getFbImage();
+	const cropperCanvas = imageEdit.getCanvas();
 	// cropperImage.style.transform = `matrix(${$event.detail.matrix.join(", ")})`;
 	// fitImage($event, cropperCanvas, cropperImage, "contain");
 	console.log("TRANSFORM", $event);
@@ -1095,9 +1084,8 @@ function resetControl(eventConfig) {
 	};
 	click.reset = {
 		func: function() {
-			if (undoRedo) {
-				undoRedo.reset();
-			}
+			const selection = getSelection();
+			selection.$center();
 		}
 	};
 }
@@ -1412,7 +1400,7 @@ function getCanvasAsFile(editor, originalImage) {
 }
 
 function canvasToDataUrl() {
-	const selection = document.querySelector("cropper-selection");
+	const selection = getSelection();
 	return selection.$toCanvas().then(cropped => {
 		return cropped.toDataURL();
 	});
