@@ -16,7 +16,6 @@
 
 	<properties>
 		<spotbugs.excludeFilterFile>${basedir}/spotbugs-exclude-filter.xml</spotbugs.excludeFilterFile>
-		<suppressionFiles>${project.parent.basedir}/owasp-jetty-suppression.xml,${basedir}/test-lib-owasp-suppression.xml,${project.parent.basedir}/owasp-velocity-suppression.xml</suppressionFiles>
 		<selenium.version>3.141.59</selenium.version>
 	</properties>
 
@@ -68,7 +67,7 @@
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
-			<version>5.7.0</version>
+			<version>5.9.2</version>
 		</dependency>
 
 		<dependency>
@@ -83,11 +82,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.14</version>
-		</dependency>
 	</dependencies>
 
 </project>
