@@ -5,6 +5,9 @@
 ### API Changes
 ### Enhancements
 ### Bug Fixes
+* The latest version of the shade plugin used to create the examples lde dependency jar has changed how it handles
+  the reduced pom files. The reduced pom removes all the dependencies which impacts the use of the main attached jar so
+  its creation has been disabled.
 
 ## 1.5.35
 
