@@ -19,6 +19,7 @@
 * The latest version of the shade plugin used to create the examples lde dependency jar has changed how it handles
   the reduced pom files. The reduced pom removes all the dependencies which impacts the use of the main attached jar so
   its creation has been disabled.
+* Improve performance unit test messaging and increase padding factors to help avoid intermittent fails.
 
 ## 1.5.35
 
