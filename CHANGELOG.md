@@ -4,6 +4,11 @@
 
 ### API Changes
 ### Enhancements
+### Bug Fixes
+
+## 1.5.36
+
+### Enhancements
 * Update project dependencies to current versions
 * Fix convergent dependencies by using excludes and adding the required dependency directly. Only using
   DependencyManagement in the parent pom is not reliable for library projects.
